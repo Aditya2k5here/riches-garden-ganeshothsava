@@ -1,0 +1,552 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   RICHES GARDEN GANESHOTHSAVA — DESIGN TOKENS
+   Every colour, type step and rhythm value lives here. Change a token, the
+   whole site follows. Nothing below this block should hard-code a colour.
+   ========================================================================== */
+
+@theme {
+  /* ---- Palette -----------------------------------------------------------
+     Maroon + gold come from the festival poster. The deep green is lifted
+     from the Riches Garden logo and used sparingly, so the mark never sits
+     in the page as a foreign object. */
+  --color-maroon-900: #4a0a18;
+  --color-maroon: #6e1025;
+  --color-maroon-700: #83162f;
+  --color-crimson: #a81735;
+  --color-crimson-400: #c4304e;
+
+  --color-gold: #c89b3c;
+  --color-gold-300: #e3c485;
+  /* Text-weight gold. Darker than the ornamental gold above because it
+     carries small type: 4.86:1 on cream, 5.6:1 on paper — both clear AA. */
+  --color-gold-600: #7f5e1b;
+
+  --color-cream: #f1e6d0;
+  --color-cream-300: #f7f0e2;
+  --color-paper: #faf8f3;
+  --color-char: #171515;
+  --color-char-600: #4a4442;
+
+  --color-leaf: #1e4630;
+
+  /* ---- Type --------------------------------------------------------------
+     Display: high-contrast old-style serif, chosen to sit with the classical
+     serif already inside the logo wordmark.
+     Sans: quiet neo-grotesque for everything functional. */
+  --font-display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-kannada: var(--font-kannada-sans), var(--font-instrument), sans-serif;
+
+  /* Fluid editorial scale. Deliberately wide range — small text stays small,
+     display type gets genuinely large on desktop. */
+  --text-micro: clamp(0.6875rem, 0.67rem + 0.09vw, 0.75rem);
+  --text-xs: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem);
+  --text-sm: clamp(0.9375rem, 0.91rem + 0.14vw, 1rem);
+  --text-base: clamp(1.0625rem, 1.01rem + 0.28vw, 1.1875rem);
+  --text-lg: clamp(1.1875rem, 1.09rem + 0.44vw, 1.4375rem);
+  --text-xl: clamp(1.5rem, 1.32rem + 0.9vw, 2.125rem);
+  --text-2xl: clamp(1.875rem, 1.5rem + 1.85vw, 3.125rem);
+  --text-3xl: clamp(2.375rem, 1.72rem + 3.25vw, 4.75rem);
+  --text-4xl: clamp(2.875rem, 1.6rem + 6.3vw, 7.5rem);
+  --text-5xl: clamp(3.75rem, 0.9rem + 14vw, 12rem);
+
+  /* ---- Rhythm ---- */
+  --spacing-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --spacing-section: clamp(5rem, 11vh, 10rem);
+  --spacing-section-lg: clamp(7rem, 16vh, 15rem);
+
+  /* ---- Motion ----
+     One easing curve across the whole site. Consistency reads as craft. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --nav-h: 4.5rem;
+    color-scheme: light;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --nav-h: 5.5rem;
+    }
+  }
+
+  * {
+    min-width: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Anchor links must clear the fixed navigation. */
+    scroll-padding-top: var(--nav-h);
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-char);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.65;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-maroon);
+    color: var(--color-cream);
+  }
+
+  /* Visible, on-brand focus ring. Never remove it — only restyle. */
+  :focus-visible {
+    outline: 2px solid var(--color-crimson);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-gold-300);
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ==========================================================================
+   COMPONENT PRIMITIVES
+   Small, reusable pieces of art direction. Kept in CSS rather than repeated
+   as long utility strings so the visual language stays edit-in-one-place.
+   ========================================================================== */
+
+@layer components {
+  /* --- Layout ------------------------------------------------------------ */
+
+  .shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .shell-narrow {
+    width: 100%;
+    max-width: 58rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* --- Eyebrow -----------------------------------------------------------
+     Letterspaced small caps with a leading hairline. Used to label every
+     section. Cheap to render, instantly reads as editorial rather than app. */
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-micro);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--color-gold-600);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: clamp(1.5rem, 4vw, 3rem);
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    flex: none;
+  }
+
+  .on-dark .eyebrow {
+    color: var(--color-gold-300);
+  }
+
+  /* --- Rules -------------------------------------------------------------- */
+
+  .rule {
+    height: 1px;
+    border: 0;
+    background: color-mix(in oklab, var(--color-char) 14%, transparent);
+  }
+
+  .on-dark .rule {
+    background: color-mix(in oklab, var(--color-cream) 22%, transparent);
+  }
+
+  /* --- Buttons ------------------------------------------------------------
+     Square-ish (2px) rather than pill. Pills read as SaaS. */
+
+  .btn {
+    --btn-bg: var(--color-maroon);
+    --btn-fg: var(--color-cream-300);
+    --btn-edge: var(--color-maroon);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7em;
+    min-height: 3.25rem;
+    padding: 0.9rem 1.85rem;
+    border: 1px solid var(--btn-edge);
+    border-radius: 2px;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    transition:
+      background-color 0.5s var(--ease-out-expo),
+      color 0.5s var(--ease-out-expo),
+      border-color 0.5s var(--ease-out-expo);
+  }
+
+  .btn:hover {
+    --btn-bg: var(--color-crimson);
+    --btn-edge: var(--color-crimson);
+  }
+
+  .btn-ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-maroon);
+    --btn-edge: color-mix(in oklab, var(--color-maroon) 32%, transparent);
+  }
+
+  .btn-ghost:hover {
+    --btn-bg: var(--color-maroon);
+    --btn-fg: var(--color-cream-300);
+    --btn-edge: var(--color-maroon);
+  }
+
+  .on-dark .btn {
+    --btn-bg: var(--color-gold);
+    --btn-fg: var(--color-maroon-900);
+    --btn-edge: var(--color-gold);
+  }
+
+  .on-dark .btn:hover {
+    --btn-bg: var(--color-gold-300);
+    --btn-edge: var(--color-gold-300);
+  }
+
+  .on-dark .btn-ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-cream);
+    --btn-edge: color-mix(in oklab, var(--color-cream) 38%, transparent);
+  }
+
+  .on-dark .btn-ghost:hover {
+    --btn-bg: var(--color-cream);
+    --btn-fg: var(--color-maroon-900);
+    --btn-edge: var(--color-cream);
+  }
+
+  /* --- Text link with a rule that draws in on hover ----------------------- */
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-out-expo);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* --- Dark surfaces ------------------------------------------------------ */
+
+  .on-dark {
+    color: var(--color-cream);
+  }
+
+  .on-dark h1,
+  .on-dark h2,
+  .on-dark h3 {
+    color: var(--color-cream-300);
+  }
+
+  /* --- Utility text colours ---------------------------------------------- */
+
+  .text-muted {
+    color: var(--color-char-600);
+  }
+
+  .on-dark .text-muted {
+    color: color-mix(in oklab, var(--color-cream) 72%, transparent);
+  }
+
+  /* --- Tap target ---------------------------------------------------------
+     Small-caps links are 18px tall. WCAG 2.5.8 wants 24px, so standalone
+     links get a box without changing where the text sits. */
+
+  .tap {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+
+  /* --- Tabular figures for schedules -------------------------------------- */
+
+  .nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+/* ==========================================================================
+   MOTION
+   ========================================================================== */
+
+@layer utilities {
+  /* Grain: a single inline SVG turbulence, tiled. Kills the flat-digital
+     look of large colour fields without costing a network request. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}
+
+/* Honour the OS setting. Everything still arrives, it just stops moving. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   THE OPENING — loader, then hero
+   Both are pure CSS, on one shared clock (`--loader-hold`).
+
+   This is a performance decision as much as a design one. If the hero waited
+   for React to hydrate before revealing itself, the largest element on the
+   page could not paint until the bundle had downloaded, parsed and run —
+   which measured a 6.4s LCP on a throttled phone. As CSS keyframes the whole
+   opening plays off the server-rendered HTML, so it is identical on a fast
+   laptop and a slow Android, and it still works with JavaScript disabled.
+   ========================================================================== */
+
+@layer components {
+  :root {
+    /* One number the loader and the hero both read. */
+    --loader-hold: 1500ms;
+  }
+
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: var(--color-maroon-900);
+    animation: rg-loader-out 0.7s var(--ease-out-expo) var(--loader-hold)
+      forwards;
+  }
+
+  .loader-figure {
+    animation: rg-bob 1.8s var(--ease-in-out-quart) infinite;
+  }
+
+  .loader-ball {
+    transform-origin: 148px 150px;
+    animation: rg-kick 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  .loader-trunk {
+    transform-origin: 100px 88px;
+    animation: rg-trunk 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  .loader-bar {
+    animation: rg-bar var(--loader-hold) var(--ease-out-expo) forwards;
+  }
+
+  /* --- hero entrance ------------------------------------------------------
+     `--i` staggers each element. `both` holds the start frame through the
+     delay, so nothing flashes before its turn. */
+
+  .hero-line,
+  .hero-soft,
+  .hero-fade {
+    animation-delay: calc(var(--loader-hold) + (var(--i, 0) * 100ms));
+    animation-fill-mode: both;
+    animation-timing-function: var(--ease-out-expo);
+  }
+
+  /* Type sliding up out of its own mask. */
+  .hero-line {
+    animation-name: rg-hero-line;
+    animation-duration: 1.15s;
+  }
+
+  .hero-soft {
+    animation-name: rg-hero-soft;
+    animation-duration: 1s;
+  }
+
+  .hero-fade {
+    animation-name: rg-hero-fade;
+    animation-duration: 1.8s;
+  }
+
+  @keyframes rg-loader-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes rg-hero-line {
+    from {
+      transform: translateY(110%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes rg-hero-soft {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes rg-hero-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes rg-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* The ball rises, hangs, and drops back to the trunk tip. */
+  @keyframes rg-kick {
+    0% {
+      transform: translate(0, 0) scale(1.06, 0.94);
+    }
+    18% {
+      transform: translate(6px, -34px) scale(0.98, 1.02);
+    }
+    50% {
+      transform: translate(12px, -48px) scale(1, 1) rotate(140deg);
+    }
+    82% {
+      transform: translate(6px, -30px) scale(0.98, 1.02) rotate(260deg);
+    }
+    100% {
+      transform: translate(0, 0) scale(1.06, 0.94) rotate(360deg);
+    }
+  }
+
+  @keyframes rg-trunk {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    45% {
+      transform: rotate(-5deg);
+    }
+  }
+
+  @keyframes rg-bar {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+/* Page content must not scroll behind the loader. Set by the loader on mount
+   and removed when it clears; with JavaScript off the noscript rule in the
+   root layout removes the loader entirely, so nothing ever locks. */
+body[data-loading="true"] {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Show the mark, then get out of the way. */
+    --loader-hold: 300ms;
+  }
+
+  .loader-figure,
+  .loader-ball,
+  .loader-trunk {
+    animation: none !important;
+  }
+
+  .loader-bar {
+    transform: scaleX(1);
+  }
+}
