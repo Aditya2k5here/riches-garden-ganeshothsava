@@ -37,5 +37,17 @@ export function stagger(step = 0.09, delay = 0): Variants {
   };
 }
 
-/** Viewport config: fire once, a little before the element is fully in view. */
-export const inView = { once: true, amount: 0.25, margin: "0px 0px -8% 0px" } as const;
+/**
+ * Viewport config: fire once, a little before the element reaches the bottom
+ * of the screen.
+ *
+ * `amount: "some"` rather than a fraction. A fraction is a share of the
+ * *element*, so a tall container — the 21-name committee roster is well over
+ * two screens on a phone — may never have a quarter of itself on screen at
+ * the point the visitor arrives, and simply never animates in.
+ */
+export const inView = {
+  once: true,
+  amount: "some",
+  margin: "0px 0px -12% 0px",
+} as const;

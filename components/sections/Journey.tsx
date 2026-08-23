@@ -8,7 +8,7 @@ import { LotusRule } from "@/components/ui/Ornament";
 import { Reveal, RevealLines } from "@/components/ui/Reveal";
 import { festival, journey, journeyIntro, type JourneyChapter } from "@/content";
 import { cn } from "@/lib/cn";
-import { EASE_OUT_EXPO } from "@/lib/motion";
+import { EASE_OUT_EXPO, inView } from "@/lib/motion";
 
 /**
  * THE 21-YEAR JOURNEY
@@ -175,7 +175,7 @@ function Chapter({
       )}
       initial={{ opacity: 0, y: 26 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
+      viewport={inView}
       transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
     >
       <ChapterHead year={year} label={label} note={note} current={current} />

@@ -7,7 +7,7 @@ import { LotusRule } from "@/components/ui/Ornament";
 import { Reveal } from "@/components/ui/Reveal";
 import { programme, programmeIntro, type ProgrammeEvent } from "@/content";
 import { cn } from "@/lib/cn";
-import { EASE_OUT_EXPO } from "@/lib/motion";
+import { EASE_OUT_EXPO, inView } from "@/lib/motion";
 
 /**
  * PROGRAMME
@@ -175,7 +175,7 @@ function EventRow({ event, index }: { event: ProgrammeEvent; index: number }) {
       data-reveal=""
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
+      viewport={inView}
       transition={{ duration: 0.7, delay: index * 0.05, ease: EASE_OUT_EXPO }}
       className="group border-t border-char/10 last:border-b"
     >

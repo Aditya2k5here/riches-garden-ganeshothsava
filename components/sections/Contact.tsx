@@ -32,7 +32,7 @@ export function Contact() {
           {/* --- where --- */}
           <Reveal className="lg:col-span-4">
             <p className="eyebrow">Where</p>
-            <address className="mt-6 font-display text-xl leading-[1.45] text-maroon not-italic">
+            <address className="mt-6 font-display text-lg leading-[1.5] text-maroon not-italic">
               {contact.address.lines.map((line) => (
                 <span key={line} className="block">
                   {line}
