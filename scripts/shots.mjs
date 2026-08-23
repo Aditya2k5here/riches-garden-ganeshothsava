@@ -8,7 +8,7 @@
  * Drives the Chrome already installed on the machine (no browser download).
  * Files land in scripts/.shots/, which is git-ignored.
  */
-import { mkdir, rm } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 
@@ -58,7 +58,8 @@ if (!executablePath) {
   process.exit(1);
 }
 
-await rm(OUT, { recursive: true, force: true });
+// Deliberately not cleared: a targeted run should not throw away the shots
+// from the last full run.
 await mkdir(OUT, { recursive: true });
 
 const browser = await chromium.launch({ executablePath, headless: true });
