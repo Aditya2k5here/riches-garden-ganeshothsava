@@ -125,8 +125,20 @@ function DesktopTimeline() {
     const el = track.current;
     if (!el) return;
 
-    const measure = () =>
-      setDistance(Math.max(0, el.scrollWidth - window.innerWidth));
+    const measure = () => {
+      const last = el.lastElementChild as HTMLElement | null;
+      if (!last) return;
+
+      // Not `scrollWidth`: a flex container leaves its own padding-right out
+      // of that measurement, so the track stopped one gutter short and the
+      // final year ended flush against the screen edge with its label clipped
+      // into the corner. Measured from the last panel instead, plus the same
+      // gutter the first panel gets, so the timeline closes symmetrically.
+      const gutter = parseFloat(getComputedStyle(el).paddingLeft) || 0;
+      const contentEnd = last.offsetLeft + last.offsetWidth + gutter;
+
+      setDistance(Math.max(0, contentEnd - window.innerWidth));
+    };
 
     measure();
     const ro = new ResizeObserver(measure);

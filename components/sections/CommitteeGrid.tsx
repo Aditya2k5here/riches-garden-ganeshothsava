@@ -18,6 +18,9 @@ import { EASE_OUT_EXPO } from "@/lib/motion";
  * measuring means "two rows" stays true at every one of them, and after the
  * fonts load.
  */
+/** How much of the third row shows under the fade. */
+const PEEK = 56;
+
 export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
   const grid = useRef<HTMLUListElement>(null);
   const [collapsedHeight, setCollapsedHeight] = useState<number | null>(null);
@@ -44,8 +47,11 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
       return;
     }
 
-    const gap = parseFloat(getComputedStyle(el).rowGap || "0");
-    setCollapsedHeight(rowTops[2]! - gap);
+    // Stop a little way into the third row rather than cleanly at the end of
+    // the second. That sliver of the next row, fading out, is what tells you
+    // there is more — a grid that ends on a tidy boundary just looks like the
+    // whole list, and the button alone is easy to miss.
+    setCollapsedHeight(rowTops[2]! + PEEK);
   }, []);
 
   useEffect(() => {
