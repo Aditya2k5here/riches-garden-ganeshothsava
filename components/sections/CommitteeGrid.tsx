@@ -105,13 +105,6 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
           ))}
         </ul>
 
-        {/* Softens the cut so the grid reads as continuing, not as truncated. */}
-        {hidden && (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-paper"
-          />
-        )}
       </motion.div>
 
       {collapsible && (
