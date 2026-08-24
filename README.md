@@ -1,13 +1,16 @@
 # Riches Garden Ganeshothsava
 
 The website for the Riches Garden Ganeshothsava Committee — Ramamurthy Nagar,
-Bengaluru. 2026 is the twenty-first year.
+Bengaluru. 2026 is the twenty-first year: **18 · 19 · 20 September 2026**.
 
 Next.js (App Router) · TypeScript · Tailwind CSS v4 · Motion. No database, no
-backend, no authentication. Registration runs on Google Forms, which is a
-deliberate choice: a residents' committee should not have to operate a server
-to collect thirty children's names, and the form already feeds the sheet the
-running order is decided in.
+backend, no accounts, no API routes. Registration runs on Google Forms, which
+is deliberate: a residents' committee should not have to operate a server to
+collect thirty names, and the form already feeds the sheet the running order
+is decided in.
+
+**Going live:** [docs/launch.md](docs/launch.md)
+**Building the registration form:** [docs/registration-form.md](docs/registration-form.md)
 
 ---
 
@@ -20,211 +23,145 @@ npm run dev
 
 Then <http://localhost:3000>.
 
-| Command                  | What it does                                              |
-| ------------------------ | --------------------------------------------------------- |
-| `npm run dev`            | Development server                                          |
-| `npm run build`          | Production build                                            |
-| `npm start`              | Serve the production build                                  |
-| `npm run typecheck`      | TypeScript, no emit                                         |
-| `npm run lint`           | ESLint                                                      |
-| `npm run shots`          | Screenshots every section, desktop + mobile                 |
-| `npm run audit:a11y`     | axe-core, heading order, landmarks, tap targets             |
-| `npm run audit:contrast` | Measures contrast from rendered pixels                      |
-| `npm run logo`           | Regenerates the logo variants from `References/`            |
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run typecheck` | TypeScript, no emit |
+| `npm run lint` | ESLint |
+| `npm run qa` | Links, anchors, assets, routes, dates, console errors |
+| `npm run audit:responsive` | Overflow, tap targets and QR size at 7 widths |
+| `npm run audit:a11y` | axe-core, heading order, landmarks |
+| `npm run audit:contrast` | Contrast measured from rendered pixels |
+| `npm run audit:perf` | Transfer weight and Core Web Vitals |
+| `npm run shots` | Screenshots of every section, desktop + mobile |
+| `npm run images` | Re-crops the journey photographs |
+| `npm run logo` | Regenerates the logo variants |
+| `npm run kannada` | Re-subsets the Kannada fonts |
+| `npm run backup` | Writes a restorable backup into `backups/` |
 
-The audit and screenshot scripts drive the Chrome already installed on the
-machine — no browser download. Point them at a production build for real
-numbers:
+The audit scripts drive the Chrome already on the machine — no browser
+download. Point them at a production build for real numbers:
 
 ```bash
 npm run build && npx next start -p 3100
-SHOT_BASE=http://localhost:3100 npm run audit:a11y
+SHOT_BASE=http://localhost:3100 npm run qa
 ```
 
 ---
 
 ## Changing the content
 
-**Nothing about the festival is written inside a component.** Everything lives
-in `content/`, and the design does not need to change when the content does.
+**Nothing about the festival is written inside a component.** It all lives in
+`content/`, and the design does not change when the content does.
 
-| File                    | Holds                                                      |
-| ----------------------- | ---------------------------------------------------------- |
-| `content/site.ts`       | Year, edition, name, navigation, logo paths, hero artwork    |
-| `content/welcome.ts`    | The opening statement and introduction                       |
-| `content/journey.ts`    | The 21-year timeline                                         |
-| `content/programme.ts`  | Day One / Day Two running order                              |
-| `content/children.ts`   | Children's events, registration rules, final running order   |
-| `content/committee.ts`  | Committee members, portfolios, volunteers                    |
-| `content/donations.ts`  | Contribution amounts and what they pay for                   |
-| `content/contact.ts`    | Address and committee contacts                               |
+| File | Holds |
+| --- | --- |
+| `content/site.ts` | Year, edition, dates, navigation, logo paths |
+| `content/journey.ts` | The years and their photographs |
+| `content/programme.ts` | The three-day running order |
+| `content/stage.ts` | Categories, rules, registration, final running order |
+| `content/committee.ts` | Members and portfolios |
+| `content/contribute.ts` | UPI details |
+| `content/contact.ts` | Address and committee contacts |
+| `content/i18n.ts` | Every Kannada string on the site |
 
 ### Rolling over to next year
 
-In `content/site.ts`:
+In `content/site.ts`: bump `year`, `edition`, `editionOrdinal` and `dates`.
+Add last year's photograph to `content/journey.ts` and move `current: true`
+onto the new year. Update `content/programme.ts` with the new dates. Done.
 
-```ts
-year: 2027,
-edition: "22nd",
-editionOrdinal: 22,
-```
+### Kannada
 
-Then add a chapter to `content/journey.ts`, move `current: true` onto it, and
-replace the programme. That is the whole job.
+There is one site, not two, and no language toggle. Kannada appears in five
+specific places — the committee's name, the opening statement, and one line
+each in Contribute, Contact and the footer — and every one of those strings is
+in `content/i18n.ts`.
 
-### Publishing the 2026 programme
+The fonts are subsetted to exactly the characters in use: 33 of them, which
+takes Noto Sans Kannada from 89 kB to 14 kB and Noto Serif Kannada from 119 kB
+to 17 kB. **Run `npm run kannada` after editing any Kannada string**, or the
+new characters will render as boxes.
 
-`content/programme.ts` currently has real event names but no times, so both
-days carry `pending: true` and the section says the programme is being
-finalised. To publish:
-
-1. Fill in `date` for each day.
-2. Replace each `time: null` with a string, e.g. `"6:30 PM"`.
-3. Delete `pending: true`.
-
-Please also check the **day allocation** — which events fall on Day One versus
-Day Two was assumed, not supplied, and is flagged in the file.
-
-### Publishing the children's running order
-
-`/programme/children` is a standalone, shareable page — the link that goes into
-the WhatsApp group once registrations close. It renders exactly the list in
-`childrensSchedule` (`content/children.ts`) and computes nothing:
-
-```ts
-export const childrensSchedule: ChildrenPerformance[] = [
-  { sequence: "01", name: "…", category: "Bharatanatyam", approxTime: "6:30 PM" },
-  { sequence: "02", name: "…", category: "Group Dance", approxTime: "6:35 PM", group: true },
-];
-```
-
-The order is the committee's decision, made in the sheet. While the array is
-empty the page shows an honest "not published yet" state. Every timing is
-labelled **approximate**, because on the day it always is.
-
-The page is excluded from search engines in `app/robots.ts` — it carries
-children's names, and the committee shares the link directly rather than
-having it indexed.
+That script keeps every Kannada combining mark, not just the characters in the
+strings: the shaper decomposes vowel signs before applying substitutions, and
+subsetting on the visible text alone silently breaks conjunct clusters — it
+looks fine until you compare it against the original.
 
 ### Photographs
 
-Drop files into `public/images/` and add an `image` to the relevant content
-entry:
+Journey photographs are cropped to one consistent 4:3 by `npm run images`.
+Where automatic cropping picks the wrong subject, name the centre by hand:
 
-```ts
-{ year: 2025, label: "The twentieth year",
-  image: { src: "/images/journey/2025.jpg", alt: "…", width: 1600, height: 1200 } }
+```js
+2020: { src: "References/2020.jpeg", focusX: 0.46 },
 ```
 
-Until a photograph exists, `Figure` renders an ornamental plate instead — a
-framed panel with the mandala. That is a deliberate choice, not a placeholder:
-the site should not be padded out with stock or AI-generated photographs of
-other people's celebrations, and an empty grey box would look broken. The
-committee section behaves the same way — with no portraits it renders a
-typographic roster, and the moment any member has an `image` it becomes a
-portrait grid.
+2020 needed this — the brightest thing in that frame is a lens flare, so the
+attention crop centred on it and pushed the Ganesha off to the side.
 
----
+Committee portraits go in `public/images/committee/` as squares, added to the
+member's entry in `content/committee.ts`. Until one exists, the cell renders
+an ornamental plate at the same 1:1 — a composed panel rather than a grey box,
+so the grid looks finished whether one portrait exists or all twenty-one do.
 
-## Environment
+### Publishing the stage running order
 
-Copy `.env.example` to `.env.local`, and set the same keys in the host.
-Everything is `NEXT_PUBLIC_*` and therefore public by definition — **never put
-a secret, key or password in any of them.**
-
-| Variable                            | Effect when unset                                     |
-| ----------------------------------- | ----------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`              | Metadata and sitemap fall back to localhost            |
-| `NEXT_PUBLIC_REGISTRATION_FORM_URL` | Register button becomes "Registration opens soon"      |
-| `NEXT_PUBLIC_UPI_ID`                | Payment panel says to speak to a committee member      |
-| `NEXT_PUBLIC_UPI_PAYEE`             | Defaults to the committee's name                       |
-
-Drop the payment QR at `public/donate/upi-qr.png` and the donations panel
-picks it up automatically; without it the panel shows a "QR code to be added"
-frame rather than a broken image.
-
----
-
-## Brand assets
-
-`References/Committee logo.png` is the supplied mark. It arrived on a solid
-white background, which would show as a white box on the cream and maroon
-surfaces, so `npm run logo` produces four web variants:
-
-- `riches-garden-logo.png` — white knocked out to transparency, artwork untouched
-- `riches-garden-logo-reversed.png` — the same shapes tinted cream, for maroon surfaces
-- `riches-garden-emblem.png` / `-reversed.png` — the circular device alone, for the
-  navigation bar and favicon, where the full lockup's wordmark would be
-  illegible
-
-Only the background removal and a single-colour tint are applied; the artwork
-itself is never redrawn.
+`/programme/children` is a standalone page — the link that goes into the
+WhatsApp group once registrations close. It renders exactly the list in
+`childrensSchedule` (`content/stage.ts`) and computes nothing. While the array
+is empty it shows an honest "not published yet" state. Every timing is
+labelled **approximate**, because on the day it always is. The page is
+excluded from search indexing in `app/robots.ts` — it carries children's
+names.
 
 ---
 
 ## Notes on how it is built
 
 **Design tokens.** Every colour, type step and spacing value is a CSS custom
-property in `app/globals.css`. Change a token and the whole site follows.
-Nothing hard-codes a colour.
+property in `app/globals.css`. Nothing hard-codes a colour.
 
-**The opening is CSS, not JavaScript.** The loading animation and the hero
-reveal are keyframes on one shared clock (`--loader-hold`). If the hero waited
-for React to hydrate, the largest text on the page could not paint until the
-bundle had downloaded and run — that measured a 6.4 s LCP on a throttled
-phone. As CSS it plays off the server-rendered HTML, identically on a fast
-laptop and a slow Android, and it still works with scripting disabled.
+**The opening is CSS, not JavaScript.** The Ganesha-and-football loader and
+the hero reveal are keyframes on one shared clock (`--loader-hold`). If the
+hero waited for React to hydrate, the largest text on the page could not paint
+until the bundle had downloaded and run — that measured a 6.4 s LCP on a
+throttled phone. As CSS it plays off the server-rendered HTML, identically on
+a fast laptop and a slow Android, and it still works with scripting disabled.
 
-**Motion.** One easing curve, defined once in `lib/motion.ts`. Scroll reveals
-fire once and are then left alone. `prefers-reduced-motion` is honoured twice
-over: a CSS media query for transitions, and `MotionConfig reducedMotion="user"`
-for the JavaScript-driven ones.
+**Figures.** Cormorant ships old-style figures by default — the 1 sits at
+x-height, the 2 drops below the baseline. Right in running prose, wrong for a
+year or a start time: "21 years" read as a typo and "9:00 am" as a footnote.
+Headings and the `.figure-display` class use lining, tabular figures; body
+prose keeps the old-style ones.
 
-**Two layouts, not one squeezed.** The journey is a horizontal timeline driven
-by vertical scroll on desktop, and a vertical chronology on phones — the same
-data, laid out for the gesture that suits each.
+**No dashes as separators.** Sections are announced by a stacked index
+numeral, not by a rule. The old eyebrow drew a short line before its label and
+across six sections that line had become the most repeated element on the
+page.
 
-**Without JavaScript** the page still reads: a `noscript` stylesheet in the
-root layout releases every scroll-reveal from its hidden starting state and
-removes the loading overlay.
+**Two layouts, not one squeezed.** The journey is a horizontal track driven by
+vertical scroll on desktop and a vertical chronology on phones — same data,
+laid out for the gesture that suits each.
 
-**Security.** Headers are set in `next.config.ts` — CSP, HSTS, frame denial,
-nosniff, a restrictive permissions policy. Fonts are self-hosted by
-`next/font`, so no request leaves for a font CDN, and there are no
-third-party scripts at all. The one compromise is `'unsafe-inline'` in
-`script-src`: Next injects an inline bootstrap, and a nonce would force every
-page to render dynamically and give up static CDN delivery. With no user
-input anywhere in the app and no `dangerouslySetInnerHTML`, that trade is
-worth it — **but if a form, comment field or third-party embed is ever added,
-move to a nonce in middleware at the same time.**
+**Missing content degrades to something composed.** No stock photography, no
+grey boxes, no invented history. Nothing on this site claims a fact the
+committee did not supply.
 
-**Fonts** are subsetted where it pays. The committee's Kannada name is the only
-Kannada on the site — about thirty characters — and the full Noto Sans Kannada
-face is 89 kB plus a 28 kB Latin slice. `scripts/subset-kannada.py` cuts it to
-9 kB. Re-run it if that string changes:
-
-```bash
-python scripts/subset-kannada.py
-```
-
-The subset keeps every Kannada combining mark, not just the characters in the
-string: the shaper decomposes vowel signs before applying substitutions, and
-subsetting on the literal text alone silently breaks the conjunct clusters.
+**Without JavaScript** the page still reads: a `noscript` stylesheet releases
+every scroll-reveal from its hidden starting state and removes the loader.
 
 ---
 
 ## Measured
 
-Production build, Chrome, throttled "Slow 4G / 4× CPU" mobile profile:
+Production build, throttled "Slow 4G / 4× CPU" mobile profile:
 
-- **420 kB** total transfer → **386 kB** after font trimming
-- **LCP** under 1.6 s · **CLS** 0
-- axe-core: no violations on either page, at both widths
-- All text measured from rendered pixels clears WCAG AA contrast
-
----
-
-## Deploying
-
-Vercel, zero configuration. Set the environment variables above, point the
-domain, done. `next build` output is fully static.
+- **506 kB** total transfer · **LCP 1.5 s** · **CLS 0**
+- `npm run qa` — all checks pass
+- `npm run audit:responsive` — clean at 320, 375, 393, 412, 768, 1280, 1440 px
+- `npm run audit:a11y` — axe-core: zero violations, both pages, both widths
+- `npm run audit:contrast` — all text clears WCAG AA, measured from pixels
+- `npm audit` — 0 vulnerabilities

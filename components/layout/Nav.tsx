@@ -16,13 +16,16 @@ import { cn } from "@/lib/cn";
  *   over the hero  — no background, cream marks, reversed emblem
  *   docked         — paper background, hairline underneath, maroon marks
  *
- * The switch is driven by an IntersectionObserver on a sentinel placed at the
- * bottom of the hero rather than by a scroll listener, so nothing runs on the
- * main thread while the visitor scrolls.
+ * The switch is driven by an IntersectionObserver on a sentinel at the foot
+ * of the hero rather than a scroll listener, so nothing runs on the main
+ * thread while the visitor scrolls. A second observer tracks which section is
+ * on screen and marks the matching link — subtly, with a small gold dot
+ * rather than a colour change, so the bar never starts shouting.
  */
 export function Nav() {
   const [docked, setDocked] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string>("");
   const sentinel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,6 +36,28 @@ export function Nav() {
       { rootMargin: "-1px 0px 0px 0px", threshold: 0 },
     );
     io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Current section. The band is deliberately narrow — a section counts as
+  // current only while it crosses the upper third of the viewport.
+  useEffect(() => {
+    const sections = nav
+      .map((item) => document.querySelector(item.href))
+      .filter((el): el is Element => Boolean(el));
+    if (!sections.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(`#${visible.target.id}`);
+      },
+      { rootMargin: "-12% 0px -70% 0px", threshold: [0, 0.2, 0.6] },
+    );
+
+    sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
   }, []);
 
@@ -51,13 +76,12 @@ export function Nav() {
     };
   }, [open]);
 
-  // The open mobile overlay is maroon, so the bar reverts to its cream
-  // treatment over it even when the page is scrolled and the bar is docked.
+  // The open overlay is maroon, so the bar keeps its cream treatment over it
+  // even when the page is scrolled and the bar would otherwise be docked.
   const light = docked && !open;
 
   return (
     <>
-      {/* Sits just under the hero; when it scrolls away the bar docks. */}
       <div
         ref={sentinel}
         aria-hidden="true"
@@ -65,7 +89,7 @@ export function Nav() {
       />
 
       <a
-        href="#welcome"
+        href="#journey"
         className="sr-only rounded-xs focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:bg-maroon focus:px-5 focus:py-3 focus:text-xs focus:tracking-[0.14em] focus:text-cream-300 focus:uppercase"
       >
         Skip to content
@@ -74,7 +98,7 @@ export function Nav() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-90 transition-colors duration-700",
-          docked && !open
+          light
             ? "border-b border-char/10 bg-paper/95 backdrop-blur-[6px]"
             : "border-b border-transparent",
         )}
@@ -85,7 +109,7 @@ export function Nav() {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="group relative flex items-center gap-3.5"
+            className="relative flex items-center gap-3.5"
             aria-label={`${festival.organisation} — home`}
           >
             <span className="relative block size-10 shrink-0 lg:size-11">
@@ -134,54 +158,70 @@ export function Nav() {
           </Link>
 
           {/* --- desktop links --- */}
-          <nav
-            aria-label="Primary"
-            className="hidden items-center gap-7 lg:flex xl:gap-9"
-          >
-            {nav.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "link-underline font-sans text-[0.8125rem] tracking-[0.02em] transition-colors duration-700",
-                  light
-                    ? "text-char-600 hover:text-maroon"
-                    : "text-cream/85 hover:text-cream",
-                )}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <div className="hidden items-center lg:flex">
+            <nav aria-label="Primary" className="flex items-center gap-6 xl:gap-7">
+              {nav.map((item) => {
+                const current = active === item.href;
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    aria-current={current ? "true" : undefined}
+                    className={cn(
+                      "relative font-sans text-[0.8125rem] tracking-[0.02em] transition-colors duration-500",
+                      light
+                        ? current
+                          ? "text-maroon"
+                          : "text-char-600 hover:text-maroon"
+                        : current
+                          ? "text-cream"
+                          : "text-cream/85 hover:text-cream",
+                    )}
+                  >
+                    {item.label}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "absolute -bottom-2 left-1/2 block size-1 -translate-x-1/2 rounded-full bg-gold transition-opacity duration-500",
+                        current ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </a>
+                );
+              })}
+            </nav>
+          </div>
 
-          {/* --- mobile toggle --- */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            className="-mr-2 flex size-12 items-center justify-center lg:hidden"
-          >
-            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-            <span className="relative block h-3 w-7" aria-hidden="true">
-              <span
-                className={cn(
-                  "absolute left-0 block h-px w-full transition-all duration-500",
-                  light ? "bg-maroon" : "bg-cream",
-                  open ? "top-1.5 rotate-45" : "top-0",
-                )}
-                style={{ transitionTimingFunction: "cubic-bezier(0.76,0,0.24,1)" }}
-              />
-              <span
-                className={cn(
-                  "absolute left-0 block h-px w-full transition-all duration-500",
-                  light ? "bg-maroon" : "bg-cream",
-                  open ? "top-1.5 -rotate-45" : "top-3",
-                )}
-                style={{ transitionTimingFunction: "cubic-bezier(0.76,0,0.24,1)" }}
-              />
-            </span>
-          </button>
+          {/* --- mobile --- */}
+          <div className="flex items-center lg:hidden">
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              className="-mr-2 flex size-12 items-center justify-center"
+            >
+              <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+              <span className="relative block h-3 w-7" aria-hidden="true">
+                <span
+                  className={cn(
+                    "absolute left-0 block h-px w-full transition-all duration-500",
+                    light ? "bg-maroon" : "bg-cream",
+                    open ? "top-1.5 rotate-45" : "top-0",
+                  )}
+                  style={{ transitionTimingFunction: "cubic-bezier(0.76,0,0.24,1)" }}
+                />
+                <span
+                  className={cn(
+                    "absolute left-0 block h-px w-full transition-all duration-500",
+                    light ? "bg-maroon" : "bg-cream",
+                    open ? "top-1.5 -rotate-45" : "top-3",
+                  )}
+                  style={{ transitionTimingFunction: "cubic-bezier(0.76,0,0.24,1)" }}
+                />
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -205,29 +245,28 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
         >
           <div className="flex h-full flex-col justify-between overflow-y-auto pt-(--nav-h) pb-10">
-            <nav aria-label="Primary" className="shell pt-8">
+            <nav aria-label="Primary" className="shell pt-6">
               <ul>
                 {nav.map((item, i) => (
                   <motion.li
                     key={item.href}
-                    initial={{ opacity: 0, y: 22 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      delay: 0.16 + i * 0.055,
-                      duration: 0.7,
+                      delay: 0.14 + i * 0.045,
+                      duration: 0.65,
                       ease: EASE_OUT_EXPO,
                     }}
-                    className="border-b border-cream/12"
                   >
                     <a
                       href={item.href}
                       onClick={onClose}
-                      className="flex items-baseline gap-4 py-4.5"
+                      className="flex items-baseline gap-4 py-3.5"
                     >
-                      <span className="nums w-6 shrink-0 font-sans text-[0.625rem] tracking-[0.2em] text-gold-300/85">
-                        {String(i + 1).padStart(2, "0")}
+                      <span className="nums w-6 shrink-0 font-sans text-[0.625rem] tracking-[0.2em] text-gold-300/80">
+                        {item.index}
                       </span>
-                      <span className="font-display text-[2rem] leading-none text-cream-300">
+                      <span className="font-display text-[1.875rem] leading-none text-cream-300">
                         {item.label}
                       </span>
                     </a>
@@ -240,12 +279,12 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
               className="shell pt-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.7 }}
+              transition={{ delay: 0.45, duration: 0.7 }}
             >
-              <p className="font-sans text-[0.6875rem] tracking-[0.26em] text-gold-300 uppercase">
-                {festival.edition} Year · {festival.year}
+              <p className="figure-display text-lg text-gold-300">
+                {festival.dates}
               </p>
-              <p className="mt-3 max-w-xs font-display text-lg text-cream/80 italic">
+              <p className="mt-2 font-display text-lg text-cream/80 italic">
                 {festival.tagline}
               </p>
             </motion.div>

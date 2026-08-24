@@ -6,7 +6,7 @@ import { useRef } from "react";
 import type { CSSProperties } from "react";
 
 import { GaneshaGlyph, Mandala } from "@/components/ui/Ornament";
-import { festival, heroArtwork } from "@/content";
+import { festival, heroArtwork, kannada } from "@/content";
 
 /**
  * HERO
@@ -93,13 +93,16 @@ export function Hero() {
         className="shell relative flex flex-1 flex-col justify-end pt-(--nav-h) pb-14 sm:pb-20"
         style={{ y: typeY, opacity: typeFade }}
       >
-        <p className="hero-soft font-kannada text-sm text-gold-300/85 sm:text-base">
-          {festival.organisationKannada}
+        <p
+          lang="kn"
+          className="hero-soft font-kannada text-sm text-gold-300 sm:text-base"
+        >
+          {kannada.committee}
         </p>
 
         <h1 className="mt-5 sm:mt-7">
           <span className="sr-only">
-            {festival.name} — {festival.edition} year, {festival.year}
+            {festival.name} {festival.year}
           </span>
 
           <span aria-hidden="true" className="block">
@@ -122,13 +125,29 @@ export function Hero() {
           </span>
         </h1>
 
-        <div className="mt-8 flex flex-col gap-7 sm:mt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-          <div className="max-w-md">
-            <p className="hero-soft eyebrow !text-gold-300" style={step(5)}>
-              {festival.edition} Year · {festival.year}
-            </p>
+        {/* The milestone and the dates are the second thing anyone needs and
+            the second thing they should see — so they are set at display
+            size in the serif, not tucked into a small-caps line. */}
+        <div className="mt-9 flex flex-col gap-8 sm:mt-11 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+          <div>
             <p
-              className="hero-soft mt-4 font-display text-xl leading-[1.25] text-cream/90 italic"
+              className="hero-soft flex flex-wrap items-baseline gap-x-4 gap-y-1"
+              style={step(5)}
+            >
+              <span className="figure-display text-2xl leading-none text-gold">
+                {festival.edition}
+              </span>
+              <span
+                aria-hidden="true"
+                className="hidden h-5 w-px bg-cream/25 sm:block"
+              />
+              <span className="figure-display text-2xl leading-none text-cream-300">
+                {festival.dates}
+              </span>
+            </p>
+
+            <p
+              className="hero-soft mt-5 max-w-md font-display text-lg leading-[1.3] text-cream/85 italic"
               style={step(6)}
             >
               {festival.tagline}
@@ -140,10 +159,10 @@ export function Hero() {
             style={step(7)}
           >
             <a href="#programme" className="btn">
-              Explore the festival
+              Programme
             </a>
-            <a href="#children" className="btn btn-ghost">
-              Children&rsquo;s events
+            <a href="#stage" className="btn btn-ghost">
+              Stage events
             </a>
           </div>
         </div>
@@ -153,8 +172,13 @@ export function Hero() {
           className="hero-fade mt-11 hidden items-center justify-between gap-8 border-t border-cream/12 pt-5 sm:flex"
           style={step(9)}
         >
-          <p className="font-sans text-[0.625rem] tracking-[0.3em] text-cream/75 uppercase">
-            {festival.welcome}
+          <p className="flex items-baseline gap-3.5">
+            <span className="font-sans text-[0.625rem] tracking-[0.3em] text-cream/75 uppercase">
+              {festival.welcome}
+            </span>
+            <span lang="kn" className="font-kannada text-[0.8125rem] text-gold-300">
+              {kannada.allWelcome}
+            </span>
           </p>
 
           <span aria-hidden="true" className="flex items-center gap-3.5">

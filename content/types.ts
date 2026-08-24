@@ -1,25 +1,15 @@
 /**
  * Shapes for every piece of festival content.
  *
- * `pending: true` marks content the committee has not supplied yet. Sections
- * read that flag and degrade to a composed, finished-looking state rather
- * than rendering an empty hole — and nothing anywhere is invented to fill it.
+ * Anything the committee has not supplied yet is either absent or explicitly
+ * marked. Nothing here is filled with invented stand-in facts.
  */
 
 export type NavLink = {
   label: string;
   href: string;
-};
-
-export type JourneyChapter = {
-  year: number;
-  /** Short factual label, e.g. "The first year". Never speculative. */
-  label: string;
-  /** Optional narrative. Left empty until the committee writes it. */
-  note?: string;
-  image?: ImageRef;
-  /** Marks 2026 — rendered as the current chapter, not a memory. */
-  current?: boolean;
+  /** Two-digit index, used by the section labels and the mobile menu. */
+  index: string;
 };
 
 export type ImageRef = {
@@ -30,24 +20,25 @@ export type ImageRef = {
   height: number;
 };
 
+export type JourneyChapter = {
+  year: number;
+  image?: ImageRef;
+  /** Marks the current year — rendered as the open chapter, not a memory. */
+  current?: boolean;
+};
+
 export type ProgrammeEvent = {
-  /** Null renders as "To be announced". We do not guess times. */
-  time: string | null;
+  time: string;
   name: string;
-  description?: string;
-  venue?: string;
 };
 
 export type ProgrammeDay = {
   id: string;
-  /** e.g. "Day One" */
   label: string;
-  /** Null until the 2026 dates are fixed. */
-  date: string | null;
-  /** One-line character of the day. */
-  summary: string;
+  /** e.g. "18 September 2026" */
+  date: string;
+  weekday: string;
   events: ProgrammeEvent[];
-  pending?: boolean;
 };
 
 export type CommitteeMember = {
@@ -57,13 +48,8 @@ export type CommitteeMember = {
   image?: ImageRef;
 };
 
-export type ContributionTier = {
-  title: string;
-  detail?: string;
-};
-
 export type ChildrenPerformance = {
-  /** Sequence number decided by the committee, never computed. */
+  /** Sequence decided by the committee, never computed. */
   sequence: string;
   name: string;
   category: string;

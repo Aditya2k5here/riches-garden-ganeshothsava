@@ -1,17 +1,30 @@
 """
-Subsets Noto Sans Kannada down to the handful of glyphs this site actually
-shows, and writes it to public/fonts/ for next/font/local.
+Subsets the two Kannada faces down to the characters this site actually shows.
 
-Why: the committee's Kannada name appears twice on the site — about thirty
-characters in total. The full Kannada face is ~89 kB, plus a ~28 kB Latin
-slice the browser fetches alongside it. Subsetting to the text in use brings
-that to a few kB and removes the Latin request entirely.
-
-Run only when the Kannada strings in content/site.ts change:
     python scripts/subset-kannada.py
+
+Why: the site is bilingual, but the Kannada it carries is a few hundred
+characters of headings and labels. The full faces are ~90 kB each and each one
+drags a ~28 kB Latin slice along behind it. Subsetting to the text in use
+brings the pair to a few kB and drops the Latin requests entirely.
+
+The character set is read out of content/ and components/ rather than being
+maintained by hand, so it cannot drift away from the copy. Re-run this after
+adding or editing any Kannada string.
+
+Two things that are easy to get wrong and are handled here:
+
+  * HarfBuzz decomposes Kannada vowel signs before substitutions run, so the
+    component marks have to survive even though they never appear literally
+    in the text — ೇ is ೆ+ೕ, ೋ is ೆ+ೂ+ೕ. Subsetting on the visible characters
+    alone silently breaks the conjunct clusters, and it looks fine until you
+    compare it with the original.
+  * Only one weight is used, so the variable axis is pinned first. That alone
+    is most of the saving.
 """
 
 import pathlib
+import re
 import sys
 import urllib.request
 
@@ -19,72 +32,105 @@ from fontTools.subset import main as pyftsubset
 from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 
-# The Kannada actually rendered anywhere on the site. Keep in sync with
-# `festival.organisationKannada` in content/site.ts.
-TEXT = "ರಿಚ್ಚಸ್ ಗಾರ್ಡನ್ ಗಣೇಶೋತ್ಸವ ಸಮಿತಿ"
+FACES = [
+    {
+        "name": "noto-sans-kannada-subset",
+        "url": (
+            "https://fonts.gstatic.com/s/notosanskannada/v32/"
+            "8vIh7xs32H97qzQKnzfeXycxXZyUmySvZWItmf1fe6TVmgoD4F-Yo3w.woff2"
+        ),
+    },
+    {
+        "name": "noto-serif-kannada-subset",
+        "url": (
+            "https://fonts.gstatic.com/s/notoserifkannada/v30/"
+            "v6-JGZHLJFKIhClqUYqXDiWqpxQxWSPCTY4CEsI.woff2"
+        ),
+    },
+]
 
-# Noto Sans Kannada, variable weight axis, kannada subset.
-SOURCE = (
-    "https://fonts.gstatic.com/s/notosanskannada/v32/"
-    "8vIh7xs32H97qzQKnzfeXycxXZyUmySvZWItmf1fe6TVmgoD4F-Yo3w.woff2"
-)
-
-# Every Kannada combining mark, matra and virama. A few hundred bytes, and
-# without them the shaper has nothing to attach.
+# Every Kannada combining mark, matra and virama, plus the joiners and the
+# dotted circle. A few hundred bytes, and without them the shaper has nothing
+# to attach.
 MARKS = "U+0CBC-0CD6,U+0CE2-0CE3,U+200C-200D,U+25CC"
 
-OUT = pathlib.Path("public/fonts/noto-sans-kannada-subset.woff2")
-CACHE = pathlib.Path(".cache/noto-sans-kannada-full.woff2")
+SOURCE_DIRS = ["content", "components", "app"]
+KANNADA = re.compile(r"[ಀ-೿‌‍]")
+
+OUT_DIR = pathlib.Path("public/fonts")
+CACHE = pathlib.Path(".cache")
 
 
-def main() -> int:
-    CACHE.parent.mkdir(parents=True, exist_ok=True)
-    OUT.parent.mkdir(parents=True, exist_ok=True)
+def collect_text() -> str:
+    """Every Kannada character that appears anywhere in the source."""
+    found: set[str] = set()
+    for directory in SOURCE_DIRS:
+        root = pathlib.Path(directory)
+        if not root.exists():
+            continue
+        for path in root.rglob("*"):
+            if path.suffix not in {".ts", ".tsx", ".css"}:
+                continue
+            found.update(KANNADA.findall(path.read_text(encoding="utf-8")))
 
-    if not CACHE.exists():
-        print(f"downloading {SOURCE.rsplit('/', 1)[-1]}")
+    # Digits and punctuation appear inside Kannada runs too.
+    found.update("0123456789 .,·:—–")
+    return "".join(sorted(found))
+
+
+def build(face: dict, text: str) -> None:
+    cached = CACHE / f"{face['name']}-full.woff2"
+    if not cached.exists():
+        print(f"downloading {face['name']}")
         request = urllib.request.Request(
-            SOURCE, headers={"User-Agent": "Mozilla/5.0"}
+            face["url"], headers={"User-Agent": "Mozilla/5.0"}
         )
         with urllib.request.urlopen(request, timeout=60) as response:
-            CACHE.write_bytes(response.read())
+            cached.write_bytes(response.read())
 
-    before = CACHE.stat().st_size
+    before = cached.stat().st_size
 
-    # Only one weight is ever used, so pin the variable axis before subsetting
-    # — a static instance drops the whole variation machinery.
-    pinned = pathlib.Path(".cache/noto-sans-kannada-400.ttf")
-    font = TTFont(CACHE)
+    pinned = CACHE / f"{face['name']}-400.ttf"
+    font = TTFont(cached)
     if "fvar" in font:
-        instantiateVariableFont(font, {"wght": 400}, inplace=True, updateFontNames=True)
+        instantiateVariableFont(
+            font, {"wght": 400}, inplace=True, updateFontNames=True
+        )
     font.flavor = None
     font.save(pinned)
 
+    out = OUT_DIR / f"{face['name']}.woff2"
     pyftsubset(
         [
             str(pinned),
-            f"--text={TEXT}",
-            # HarfBuzz decomposes Kannada vowel signs before GSUB runs, so the
-            # component marks have to survive even though they never appear
-            # literally in the text: ೇ is ೆ+ೕ, ೋ is ೆ+ೂ+ೕ. Subsetting on the
-            # text alone drops them and the conjunct clusters collide.
+            f"--text={text}",
             f"--unicodes={MARKS}",
-            f"--output-file={OUT}",
+            f"--output-file={out}",
             "--flavor=woff2",
-            # Kannada needs its shaping tables kept, or conjuncts and vowel
-            # signs break. This is the whole reason not to subset by codepoint
-            # alone.
             "--layout-features+=akhn,blwf,half,pstf,vatu,cjct,rphf,pres,abvs,blws,psts,haln",
             "--no-hinting",
             "--drop-tables+=DSIG",
         ]
     )
 
-    after = OUT.stat().st_size
+    after = out.stat().st_size
     print(
-        f"{OUT}  {after / 1024:.1f} kB  "
+        f"{out}  {after / 1024:.1f} kB "
         f"(from {before / 1024:.1f} kB — {100 - after / before * 100:.0f}% smaller)"
     )
+
+
+def main() -> int:
+    CACHE.mkdir(parents=True, exist_ok=True)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    text = collect_text()
+    kannada_only = [c for c in text if "ಀ" <= c <= "೿"]
+    print(f"{len(kannada_only)} distinct Kannada characters in use")
+
+    for face in FACES:
+        build(face, text)
+
     return 0
 
 

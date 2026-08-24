@@ -1,35 +1,39 @@
 import type { JourneyChapter } from "./types";
 
 /**
- * The 21-year story.
+ * THE JOURNEY
  *
- * Only facts that are actually known are written here — the founding year,
- * the edition numbers, and 2026 as the current chapter. `note` is left empty
- * for the years the committee has not yet written about; the timeline renders
- * those as year + label + photograph, which reads as intentional restraint
- * rather than missing copy. Add a `note` and an `image` and the entry simply
- * becomes richer. Add more years by adding more objects.
+ * Year and photograph. Nothing else — no captions, no invented history.
+ *
+ * Only the years the committee has photographs for appear here. 2022 is
+ * absent because no photograph was supplied for it, not because nothing
+ * happened; add the file and a line below and it slots in.
+ *
+ * Photographs are generated at one consistent 4:3 crop by
+ * `npm run images`, so every year gets identical treatment.
  */
+const photo = (year: number) => ({
+  src: `/images/journey/${year}.jpg`,
+  alt: `Riches Garden Ganeshothsava, ${year}`,
+  width: 1400,
+  height: 1050,
+});
+
 export const journey: JourneyChapter[] = [
-  {
-    year: 2006,
-    label: "The first year",
-    note: "A handful of neighbours, one idol, and a decision to do it again next year.",
-  },
-  { year: 2021, label: "The sixteenth year" },
-  { year: 2022, label: "The seventeenth year" },
-  { year: 2023, label: "The eighteenth year" },
-  { year: 2024, label: "The nineteenth year" },
-  { year: 2025, label: "The twentieth year" },
-  {
-    year: 2026,
-    label: "The twenty-first year",
-    note: "The current chapter. Being written now.",
-    current: true,
-  },
+  { year: 2018, image: photo(2018) },
+  { year: 2019, image: photo(2019) },
+  { year: 2020, image: photo(2020) },
+  { year: 2021, image: photo(2021) },
+  { year: 2023, image: photo(2023) },
+  { year: 2024, image: photo(2024) },
+  { year: 2025, image: photo(2025) },
+  { year: 2026, current: true },
 ];
 
-export const journeyIntro = {
-  heading: ["21 years of", "celebration"],
-  body: "From a gathering of neighbours to a cherished community tradition.",
+/**
+ * The opening of the story. About and Journey are one section now, so this
+ * line is the only introduction the years get.
+ */
+export const journeyStatement = {
+  lines: ["21 years", "of coming together."],
 } as const;

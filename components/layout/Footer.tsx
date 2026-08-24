@@ -1,15 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { LotusRule } from "@/components/ui/Ornament";
-import { brand, contact, festival, nav } from "@/content";
+import { brand, contact, festival, kannada, nav } from "@/content";
 
 /**
  * FOOTER
  *
- * The full committee lockup gets its proper size here — this is the one place
- * on the page with room for it. It is the reversed (cream) tint of the same
- * artwork so it sits on maroon without a white plate behind it.
+ * The full committee lockup gets its proper size here — this is the one
+ * place on the page with room for it. It is the reversed (cream) tint of the
+ * same artwork so it sits on maroon without a white plate behind it.
  */
 export function Footer() {
   const year = new Date().getFullYear();
@@ -21,7 +20,7 @@ export function Footer() {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(80% 60% at 50% 0%, rgba(168,23,53,0.45) 0%, rgba(168,23,53,0) 65%)",
+            "radial-gradient(80% 60% at 50% 0%, rgba(168,23,53,0.4) 0%, rgba(168,23,53,0) 65%)",
         }}
       />
 
@@ -34,12 +33,12 @@ export function Footer() {
               alt={brand.logoReversed.alt}
               width={brand.logoReversed.width}
               height={brand.logoReversed.height}
-              sizes="(max-width: 1024px) 240px, 280px"
-              className="h-auto w-[15rem] lg:w-[17.5rem]"
+              sizes="(max-width: 1024px) 220px, 260px"
+              className="h-auto w-[13.75rem] lg:w-[16.25rem]"
             />
 
-            <p className="font-kannada mt-8 text-base text-gold-300/85">
-              {festival.organisationKannada}
+            <p lang="kn" className="font-kannada mt-8 text-base text-gold-300">
+              {kannada.committee}
             </p>
 
             <address className="mt-5 text-base leading-[1.7] text-cream/75 not-italic">
@@ -52,14 +51,13 @@ export function Footer() {
           </div>
 
           {/* --- links --- */}
-          <nav
-            aria-label="Footer"
-            className="lg:col-span-3 lg:col-start-7"
-          >
-            <p className="eyebrow">Explore</p>
+          <nav aria-label="Footer" className="lg:col-span-3 lg:col-start-7">
+            <p className="font-sans text-[0.6875rem] tracking-[0.24em] text-gold-300 uppercase">
+              Explore
+            </p>
             <ul className="mt-6 columns-2 gap-8 lg:columns-1">
               {nav.map((item) => (
-                <li key={item.href} className="mb-3">
+                <li key={item.href} className="mb-2.5">
                   <a
                     href={item.href}
                     className="link-underline tap text-base text-cream/80"
@@ -73,14 +71,17 @@ export function Footer() {
 
           {/* --- this year --- */}
           <div className="lg:col-span-3 lg:col-start-10">
-            <p className="eyebrow">This year</p>
-            <p className="mt-6 font-display text-2xl leading-[1.05] text-cream-300">
-              {festival.edition} year
-              <span className="block text-gold italic">{festival.year}</span>
+            <p className="font-sans text-[0.6875rem] tracking-[0.24em] text-gold-300 uppercase">
+              {festival.edition}
             </p>
-            <LotusRule className="mt-7 w-28 text-gold/70" />
-            <p className="mt-6 max-w-[26ch] font-display text-lg leading-[1.4] text-cream/75 italic">
+            <p className="figure-display mt-4 text-xl leading-[1.3] text-cream-300">
+              {festival.dates}
+            </p>
+            <p className="mt-6 max-w-[24ch] font-display text-lg leading-[1.4] text-cream/75 italic">
               {festival.tagline}
+            </p>
+            <p lang="kn" className="font-kannada mt-6 text-[0.9375rem] text-gold-300">
+              {kannada.allWelcome}
             </p>
           </div>
         </div>
@@ -96,7 +97,7 @@ export function Footer() {
               href="/programme/children"
               className="link-underline tap font-sans text-[0.6875rem] tracking-[0.14em] text-cream/75 uppercase"
             >
-              Children&rsquo;s programme order
+              Stage running order
             </Link>
             <a
               href="#hero"

@@ -1,10 +1,12 @@
-/** One-off captures: the mobile menu open, and the page with reduced motion. */
+/** Captures the states the section shots miss: Kannada, and the open menu. */
 import { mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 
 const OUT = "scripts/.shots";
-const BASE = "http://localhost:3000";
+const BASE = process.env.SHOT_BASE ?? "http://localhost:3000";
+const SECTIONS = ["hero", "about", "journey", "stage", "contribute", "contact"];
+
 const exe = [
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
@@ -13,7 +15,40 @@ const exe = [
 await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 
-// --- mobile menu open ---
+for (const vp of [
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "mobile", width: 390, height: 844, mobile: true },
+]) {
+  const ctx = await browser.newContext({
+    viewport: { width: vp.width, height: vp.height },
+    isMobile: Boolean(vp.mobile),
+    hasTouch: Boolean(vp.mobile),
+  });
+  const page = await ctx.newPage();
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  await page.waitForTimeout(2600);
+
+  // Switch to Kannada the way a visitor would.
+  await page.getByRole("button", { name: "ಕನ್ನಡ" }).first().click();
+  await page.waitForTimeout(600);
+
+  for (const id of SECTIONS) {
+    const ok = await page.evaluate((anchor) => {
+      const el = document.getElementById(anchor);
+      if (!el) return false;
+      window.scrollTo({ top: el.offsetTop, behavior: "instant" });
+      return true;
+    }, id);
+    if (!ok) continue;
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: `${OUT}/${vp.name}-kn-${id}.png` });
+    console.log(`${vp.name}-kn-${id}.png`);
+  }
+
+  await ctx.close();
+}
+
+// Mobile menu, in Kannada.
 {
   const ctx = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -22,31 +57,12 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
   });
   const page = await ctx.newPage();
   await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2800);
+  await page.waitForTimeout(2600);
+  await page.getByRole("button", { name: "ಕನ್ನಡ" }).first().click();
   await page.getByRole("button", { name: /open menu/i }).click();
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: `${OUT}/mobile-menu.png` });
-  console.log("mobile-menu.png");
-  await ctx.close();
-}
-
-// --- reduced motion, desktop ---
-{
-  const ctx = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    reducedMotion: "reduce",
-  });
-  const page = await ctx.newPage();
-  await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: `${OUT}/desktop-reduced-hero.png` });
-
-  await page.evaluate(() => {
-    document.getElementById("committee")?.scrollIntoView();
-  });
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: `${OUT}/desktop-reduced-committee.png` });
-  console.log("desktop-reduced-*.png");
+  await page.screenshot({ path: `${OUT}/mobile-kn-menu.png` });
+  console.log("mobile-kn-menu.png");
   await ctx.close();
 }
 

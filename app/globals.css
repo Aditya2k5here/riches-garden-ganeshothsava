@@ -38,6 +38,8 @@
   --font-display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
   --font-kannada: var(--font-kannada-sans), var(--font-instrument), sans-serif;
+  --font-kannada-display: var(--font-kannada-serif), var(--font-kannada-sans),
+    serif;
 
   /* Fluid editorial scale. Deliberately wide range — small text stays small,
      display type gets genuinely large on desktop. */
@@ -111,6 +113,11 @@
     line-height: 0.98;
     letter-spacing: -0.015em;
     text-wrap: balance;
+    /* Cormorant's default old-style figures drop the 2 below the baseline and
+       hold the 1 at x-height — lovely in prose, but "21 years" came out
+       looking like a mistake. Headings get lining figures; running text keeps
+       the old-style ones, which is where they belong. */
+    font-variant-numeric: lining-nums;
   }
 
   p {
@@ -164,14 +171,12 @@
     padding-inline: var(--spacing-gutter);
   }
 
-  /* --- Eyebrow -----------------------------------------------------------
-     Letterspaced small caps with a leading hairline. Used to label every
-     section. Cheap to render, instantly reads as editorial rather than app. */
+  /* --- Section label ----------------------------------------------------
+     Deliberately has no rule, dash or bullet. Sections are announced by a
+     stacked index numeral (see components/ui/SectionLabel) and by space. */
 
   .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.875rem;
+    display: inline-block;
     font-family: var(--font-sans);
     font-size: var(--text-micro);
     font-weight: 500;
@@ -179,15 +184,6 @@
     text-transform: uppercase;
     line-height: 1;
     color: var(--color-gold-600);
-  }
-
-  .eyebrow::before {
-    content: "";
-    width: clamp(1.5rem, 4vw, 3rem);
-    height: 1px;
-    background: currentColor;
-    opacity: 0.55;
-    flex: none;
   }
 
   .on-dark .eyebrow {
@@ -325,11 +321,29 @@
     min-height: 1.5rem;
   }
 
-  /* --- Tabular figures for schedules -------------------------------------- */
+  /* --- Figures ------------------------------------------------------------
+     Cormorant Garamond ships old-style figures by default: the 1 sits at
+     x-height and the 2 drops below the baseline. Beautiful inside running
+     prose, wrong for a year, a date or a start time — "21" came out looking
+     like a typo and "9:00" like a footnote. Every number on this site is a
+     fact someone is scanning for, so figures are lining and tabular
+     everywhere, and the display serif keeps its elegance while the numerals
+     stand up straight. */
 
   .nums {
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
+
+  /* Large numerals — years, dates, start times. Lining figures, tightened,
+     and given a touch more weight so they read as headings in their own
+     right rather than as text that happens to be numeric. */
+  .figure-display {
+    font-family: var(--font-display);
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -549,4 +563,32 @@ body[data-loading="true"] {
   .loader-bar {
     transform: scaleX(1);
   }
+}
+
+/* ==========================================================================
+   KANNADA
+   There is one site, not two. Kannada appears inline in a few specific
+   places (see content/i18n.ts) and simply takes its own faces where it does.
+   ========================================================================== */
+
+[lang="kn"] {
+  font-family: var(--font-kannada);
+  /* Kannada carries more vertical detail than Latin at the same size, so it
+     needs a little more room and a step down in size to sit level with it. */
+  line-height: 1.5;
+  font-size: 0.92em;
+  /* Two Latin habits that are wrong in Kannada: letterspacing pulls conjunct
+     clusters into loose fragments, and case does not exist in the script. */
+  letter-spacing: normal;
+  text-transform: none;
+  font-style: normal;
+  font-synthesis-style: none;
+}
+
+/* Where a Kannada line sits directly under a display-serif heading, it takes
+   the Kannada serif so the pair reads as one typographic voice. Applied by
+   hand rather than by selector — it is three places, not a rule. */
+.font-kannada-display {
+  font-family: var(--font-kannada-display);
+  line-height: 1.3;
 }

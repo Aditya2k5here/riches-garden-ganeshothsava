@@ -26,8 +26,8 @@ import {
  */
 
 export const metadata: Metadata = {
-  title: `Children's Cultural Programme ${festival.year}`,
-  description: `The performance order for the children's cultural programme at ${festival.name} ${festival.year}.`,
+  title: `Stage Running Order ${festival.year}`,
+  description: `The performance order for the stage events at ${festival.name} ${festival.year}.`,
   robots: { index: false, follow: true },
 };
 
@@ -64,13 +64,13 @@ export default function ChildrensProgrammePage() {
             />
           </Link>
 
-          <p className="eyebrow mt-14 justify-center before:hidden">
-            {festival.edition} Year · {festival.year}
+          <p className="figure-display mt-14 text-gold-300">
+            {festival.edition} · {festival.dates}
           </p>
 
           <h1 className="mt-5 font-display text-2xl leading-[1.05] font-light text-cream-300">
-            Children&rsquo;s
-            <span className="block text-gold italic">Cultural Programme</span>
+            Stage
+            <span className="block text-gold italic">Running Order</span>
           </h1>
 
           <div className="mt-8 flex justify-center">
@@ -137,8 +137,8 @@ export default function ChildrensProgrammePage() {
               fixes the performance order after that, and the full running
               order with approximate timings appears here.
             </p>
-            <Link href="/#children" className="btn btn-ghost mt-10">
-              Children&rsquo;s events
+            <Link href="/#stage" className="btn btn-ghost mt-10">
+              Stage events
             </Link>
           </div>
         )}

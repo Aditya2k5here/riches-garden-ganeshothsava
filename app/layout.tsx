@@ -30,14 +30,25 @@ const instrument = Instrument_Sans({
 });
 
 /**
- * Noto Sans Kannada, cut down to the ~30 characters of the committee's
- * Kannada name — the only Kannada on the site. The full face is 89 kB and
- * drags a 28 kB Latin slice along with it; this is 6.6 kB and nothing else.
- * Regenerate with `python scripts/subset-kannada.py` if that string changes.
+ * The two Kannada faces, cut down to the characters the site actually shows —
+ * 46 of them. The full faces are ~90 kB and ~119 kB, and each drags a Latin
+ * slice along behind it; these are 16 kB and 20 kB and pull nothing extra.
+ * Serif carries display sizes so Kannada headings sit with the Latin display
+ * serif; sans carries everything else, where readability wins.
+ *
+ * Regenerate with `npm run kannada` after editing any Kannada string.
  */
-const kannada = localFont({
+const kannadaSans = localFont({
   src: "../public/fonts/noto-sans-kannada-subset.woff2",
   variable: "--font-kannada-sans",
+  display: "swap",
+  weight: "400",
+  preload: false,
+});
+
+const kannadaSerif = localFont({
+  src: "../public/fonts/noto-serif-kannada-subset.woff2",
+  variable: "--font-kannada-serif",
   display: "swap",
   weight: "400",
   preload: false,
@@ -84,7 +95,8 @@ export default function RootLayout({
   return (
     <html
       lang="en-IN"
-      className={`${cormorant.variable} ${instrument.variable} ${kannada.variable}`}
+      data-lang="en"
+      className={`${cormorant.variable} ${instrument.variable} ${kannadaSans.variable} ${kannadaSerif.variable}`}
     >
       <body>
         {/*

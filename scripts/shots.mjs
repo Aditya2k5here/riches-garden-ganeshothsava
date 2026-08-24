@@ -29,13 +29,12 @@ const VIEWPORTS = [
 
 const DEFAULT_ANCHORS = [
   "hero",
-  "welcome",
   "journey",
   "programme",
-  "children",
-  "committee",
-  "donations",
+  "stage",
+  "contribute",
   "contact",
+  "committee",
 ];
 
 const args = process.argv.slice(2);

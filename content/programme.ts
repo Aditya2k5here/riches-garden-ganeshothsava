@@ -3,87 +3,54 @@ import type { ProgrammeDay } from "./types";
 /**
  * PROGRAMME
  *
- * Event names below are the ones actually recorded for the festival. Timings
- * for 2026 are not fixed yet, so every `time` is null and both days carry
- * `pending: true` — the section renders a "being finalised" state instead of
- * showing a confident-looking schedule that nobody has confirmed.
+ * Taken verbatim from the committee's own printed schedule, with only the
+ * dates moved forward. 2025 ran Friday–Sunday, 29–31 August; 2026 runs
+ * Friday–Sunday, 18–20 September, so every day maps onto the same weekday
+ * and the running order transfers unchanged.
  *
- * TO PUBLISH THE REAL 2026 PROGRAMME:
- *   1. Fill in `date` on each day.
- *   2. Replace each `time: null` with a string, e.g. "6:30 PM".
- *   3. Delete `pending: true`.
- * The layout does not need to change.
+ * Nothing here is invented. If an event or a time is not on the committee's
+ * card, it is not on this page.
+ *
+ * Two notes for the committee:
+ *   • On the printed card the English column reads 6:30 pm for the evening
+ *     performance while the Kannada column reads 6:00. The English times are
+ *     used here — worth confirming before printing 2026.
+ *   • The card calls that slot "Stage Performance by Kids"; it is listed
+ *     here as "Stage Events" to match what the rest of the site now calls it.
  */
 export const programme: ProgrammeDay[] = [
   {
     id: "day-one",
     label: "Day One",
-    date: null,
-    summary: "Installation, invocation and the cultural stage.",
-    pending: true,
+    date: "18 September 2026",
+    weekday: "Friday",
     events: [
-      {
-        time: null,
-        name: "Ganesha Pratishtapane",
-        description:
-          "The idol is installed at the pandal and the first pooja is offered.",
-        venue: "Riches Garden Main Road",
-      },
-      {
-        time: null,
-        name: "Maha Pooja",
-        description: "Community prayer, followed by distribution of prasadam.",
-      },
-      {
-        time: null,
-        name: "Cultural Programme",
-        description:
-          "The stage opens. Performances by residents and invited artistes.",
-      },
-      {
-        time: null,
-        name: "Children's Cultural Programme",
-        description:
-          "Singing, dance, Bharatanatyam, drama and group performances by the children of Riches Garden.",
-      },
+      { time: "10:00 am", name: "Ganesha Idol Installation, Pooja and Prasadam Distribution" },
+      { time: "6:30 pm", name: "Stage Events" },
+      { time: "8:30 pm", name: "Prasadam Distribution" },
     ],
   },
   {
     id: "day-two",
     label: "Day Two",
-    date: null,
-    summary: "Prasadam, games and the procession to visarjan.",
-    pending: true,
+    date: "19 September 2026",
+    weekday: "Saturday",
     events: [
-      {
-        time: null,
-        name: "Morning Prasadam",
-        description: "Prasadam served to the neighbourhood.",
-      },
-      {
-        time: null,
-        name: "Sports & Fun Games",
-        description: "Games for every age group, run by the committee.",
-      },
-      {
-        time: null,
-        name: "Maha Mangalarathi",
-        description: "The closing arathi before the idol is carried out.",
-      },
-      {
-        time: null,
-        name: "Procession & Visarjan",
-        description:
-          "The idol is taken through Riches Garden in procession, and immersed.",
-      },
+      { time: "9:00 am", name: "Pooja and Prasadam Distribution" },
+      { time: "10:00 am", name: "Sports Activity for Children and Ladies" },
+      { time: "6:30 pm", name: "Stage Events" },
+      { time: "8:30 pm", name: "Prasadam Distribution" },
+    ],
+  },
+  {
+    id: "day-three",
+    label: "Day Three",
+    date: "20 September 2026",
+    weekday: "Sunday",
+    events: [
+      { time: "9:00 am", name: "Pooja and Prasadam Distribution" },
+      { time: "12:00 pm", name: "Maha Annadanam" },
+      { time: "5:00 pm", name: "Procession with DJ Music and Visarjana" },
     ],
   },
 ];
-
-export const programmeIntro = {
-  eyebrow: "The Programme",
-  heading: "The festival",
-  body: "Two days. Many moments. One celebration.",
-  pendingNotice:
-    "The 2026 programme is being finalised. Timings will be published here as soon as the committee confirms them.",
-} as const;

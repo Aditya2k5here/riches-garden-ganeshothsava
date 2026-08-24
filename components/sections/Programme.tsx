@@ -3,26 +3,28 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 
-import { LotusRule } from "@/components/ui/Ornament";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Reveal } from "@/components/ui/Reveal";
-import { programme, programmeIntro, type ProgrammeEvent } from "@/content";
+import { nav, programme } from "@/content";
 import { cn } from "@/lib/cn";
 import { EASE_OUT_EXPO, inView } from "@/lib/motion";
 
 /**
  * PROGRAMME
  *
- * An editorial running order rather than a table: time in the margin, event
- * set in display type, description underneath, hairlines between. It reads
- * like a printed programme, which is what people actually expect a festival
- * schedule to look like.
+ * Kept in English only, at the committee's request — this is the schedule
+ * exactly as it is printed on the card, and translating a running order that
+ * people cross-check against a piece of paper only invites mismatches.
  *
- * Days are a real tab widget — arrow keys move between them, and only the
- * selected panel is in the accessibility tree.
+ * An editorial running order rather than a table: time in the margin, event
+ * in display type, hairlines between. Days are a real tab widget — arrow
+ * keys move between them, and only the selected panel is in the
+ * accessibility tree.
  */
 export function Programme() {
   const [active, setActive] = useState(0);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
+  const label = nav[1]!;
 
   const day = programme[active];
   if (!day) return null;
@@ -50,35 +52,27 @@ export function Programme() {
       aria-labelledby="programme-heading"
     >
       <div className="shell">
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
-            <Reveal>
-              <p className="eyebrow">{programmeIntro.eyebrow}</p>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <h2
-                id="programme-heading"
-                className="mt-7 font-display text-3xl leading-[0.94] font-light text-maroon"
-              >
-                {programmeIntro.heading}
-              </h2>
-            </Reveal>
-          </div>
+        <Reveal>
+          <SectionLabel index={label.index} label={label.label} />
+        </Reveal>
 
-          <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9">
-            <p className="font-display text-xl leading-[1.3] text-char-600 italic">
-              {programmeIntro.body}
-            </p>
-          </Reveal>
-        </div>
+        <Reveal delay={0.05}>
+          <h2
+            id="programme-heading"
+            className="mt-9 font-display text-3xl leading-[0.96] font-light text-maroon"
+          >
+            Three days
+            <span className="block text-crimson italic">of celebration.</span>
+          </h2>
+        </Reveal>
 
         {/* --- day selector --- */}
-        <Reveal delay={0.12}>
+        <Reveal delay={0.1}>
           <div
             role="tablist"
             aria-label="Festival days"
             onKeyDown={onKeyDown}
-            className="mt-16 flex items-end gap-9 border-b border-char/12 sm:gap-14 lg:mt-20"
+            className="mt-16 flex flex-wrap items-end gap-x-8 gap-y-4 border-b border-char/12 sm:gap-x-12 lg:mt-20"
           >
             {programme.map((d, i) => (
               <button
@@ -92,25 +86,25 @@ export function Programme() {
                 aria-controls={`panel-${d.id}`}
                 tabIndex={i === active ? 0 : -1}
                 onClick={() => setActive(i)}
-                className="group relative -mb-px cursor-pointer pb-5 text-left"
+                className="group relative -mb-px cursor-pointer pb-4 text-left"
               >
                 <span
                   className={cn(
-                    "block font-display text-2xl leading-none transition-colors duration-500",
+                    "block font-display text-xl leading-none transition-colors duration-500",
                     i === active
                       ? "text-maroon"
-                      : "text-char/60 group-hover:text-maroon/70",
+                      : "text-char/50 group-hover:text-maroon/70",
                   )}
                 >
                   {d.label}
                 </span>
                 <span
                   className={cn(
-                    "mt-2.5 block font-sans text-[0.625rem] tracking-[0.22em] uppercase transition-colors duration-500",
+                    "figure-display mt-2 block text-base leading-none transition-colors duration-500",
                     i === active ? "text-gold-600" : "text-char/60",
                   )}
                 >
-                  {d.date ?? "Date to be announced"}
+                  {d.date.replace(" 2026", "")}
                 </span>
 
                 {i === active && (
@@ -132,88 +126,55 @@ export function Programme() {
             role="tabpanel"
             id={`panel-${day.id}`}
             aria-labelledby={`tab-${day.id}`}
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+            transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
           >
-            <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-x-16">
+            <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-x-16">
               <div className="lg:col-span-4">
-                <p className="font-display text-xl leading-[1.3] text-maroon">
-                  {day.summary}
+                <p className="font-sans text-[0.6875rem] tracking-[0.24em] text-gold-600 uppercase">
+                  {day.weekday}
                 </p>
-
-                {day.pending && (
-                  <div className="mt-8 border-l-2 border-gold/60 pl-5">
-                    <p className="text-sm leading-[1.65] text-char-600">
-                      {programmeIntro.pendingNotice}
-                    </p>
-                  </div>
-                )}
+                <p className="figure-display mt-3 text-2xl leading-[1.05] text-maroon">
+                  {day.date}
+                </p>
               </div>
 
               <ol className="lg:col-span-8">
                 {day.events.map((event, i) => (
-                  <EventRow key={event.name} event={event} index={i} />
+                  <motion.li
+                    key={event.name}
+                    data-reveal=""
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={inView}
+                    transition={{
+                      duration: 0.6,
+                      delay: i * 0.05,
+                      ease: EASE_OUT_EXPO,
+                    }}
+                    className="border-t border-char/10 last:border-b"
+                  >
+                    {/* The time is the thing people are scanning for, so it
+                        is set at the same size as the event and in the
+                        display face — not shrunk into a small-caps margin
+                        note the way schedules usually treat it. */}
+                    <div className="flex flex-col gap-1.5 py-6 sm:flex-row sm:items-baseline sm:gap-9 sm:py-7">
+                      <p className="figure-display w-full shrink-0 text-xl leading-none text-crimson sm:w-32">
+                        {event.time}
+                      </p>
+                      <h3 className="min-w-0 font-display text-xl leading-[1.25] text-maroon">
+                        {event.name}
+                      </h3>
+                    </div>
+                  </motion.li>
                 ))}
               </ol>
             </div>
           </motion.div>
         </AnimatePresence>
-
-        <div className="mt-20 flex justify-center">
-          <LotusRule className="w-40 text-gold/70" />
-        </div>
       </div>
     </section>
-  );
-}
-
-function EventRow({ event, index }: { event: ProgrammeEvent; index: number }) {
-  return (
-    <motion.li
-      data-reveal=""
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={inView}
-      transition={{ duration: 0.7, delay: index * 0.05, ease: EASE_OUT_EXPO }}
-      className="group border-t border-char/10 last:border-b"
-    >
-      <div className="flex flex-col gap-1.5 py-7 transition-colors duration-500 sm:flex-row sm:gap-8 sm:py-8">
-        {/* An unconfirmed time is a rule, not eight repetitions of the same
-            sentence — the panel already says the programme is being fixed. */}
-        <p
-          className={cn(
-            "nums w-full shrink-0 font-sans text-[0.75rem] tracking-[0.16em] uppercase sm:w-36",
-            event.time ? "text-crimson" : "text-char/60",
-          )}
-        >
-          {event.time ?? (
-            <>
-              <span aria-hidden="true">&mdash;</span>
-              <span className="sr-only">Time to be announced</span>
-            </>
-          )}
-        </p>
-
-        <div className="min-w-0">
-          <h3 className="font-display text-xl leading-[1.15] text-maroon">
-            {event.name}
-          </h3>
-
-          {event.description && (
-            <p className="mt-2 max-w-[52ch] text-base leading-[1.6] text-char-600">
-              {event.description}
-            </p>
-          )}
-
-          {event.venue && (
-            <p className="mt-3 font-sans text-[0.6875rem] tracking-[0.18em] text-char/60 uppercase">
-              {event.venue}
-            </p>
-          )}
-        </div>
-      </div>
-    </motion.li>
   );
 }
