@@ -111,6 +111,26 @@ const COLLECT = () => {
 
     const r = el.getBoundingClientRect();
     if (r.width < 6 || r.height < 6) continue;
+
+    // Clipped by a collapsed container. The element still reports a layout
+    // rect below its scroller, which lands over whatever section follows —
+    // so it would be measured against a background it is never drawn on.
+    let clipped = false;
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      const hides =
+        s.overflow === "hidden" ||
+        s.overflowY === "hidden" ||
+        s.overflow === "clip" ||
+        s.overflowY === "clip";
+      if (!hides) continue;
+      const box = a.getBoundingClientRect();
+      if (r.bottom > box.bottom + 1 || r.top < box.top - 1) {
+        clipped = true;
+        break;
+      }
+    }
+    if (clipped) continue;
     // Only measure what is fully painted in this screenshot.
     if (r.top < 0 || r.left < 0) continue;
     if (r.bottom > window.innerHeight || r.right > window.innerWidth) continue;

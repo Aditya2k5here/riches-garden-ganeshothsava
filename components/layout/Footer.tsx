@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { brand, contact, festival, kannada, nav } from "@/content";
 
@@ -93,12 +92,6 @@ export function Footer() {
           </p>
 
           <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
-            <Link
-              href="/programme/children"
-              className="link-underline tap font-sans text-[0.6875rem] tracking-[0.14em] text-cream/75 uppercase"
-            >
-              Stage running order
-            </Link>
             <a
               href="#hero"
               className="link-underline tap font-sans text-[0.6875rem] tracking-[0.14em] text-cream/75 uppercase"

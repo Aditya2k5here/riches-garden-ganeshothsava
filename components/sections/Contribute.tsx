@@ -56,6 +56,9 @@ export function Contribute() {
               <p className="mt-7 max-w-[30ch] font-display text-xl leading-[1.35] text-cream/85 italic">
                 {contribute.line}
               </p>
+              <p className="mt-2 max-w-[32ch] text-base leading-[1.6] text-cream/75">
+                {contribute.sub}
+              </p>
             </Reveal>
           </div>
 
@@ -68,6 +71,11 @@ export function Contribute() {
                   alt={upi.qr.alt}
                   width={upi.qr.width}
                   height={upi.qr.height}
+                  // Served exactly as authored, not re-encoded. Every other
+                  // image on the site goes through AVIF conversion, which is
+                  // right for photographs and wrong for a payment code — a
+                  // lossy pass softens the module edges and can cost a scan.
+                  unoptimized
                   sizes="(max-width: 640px) 66vw, 260px"
                   // Large enough to scan comfortably from a second phone.
                   className="size-[15rem] object-contain sm:size-[16.25rem]"

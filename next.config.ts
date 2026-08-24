@@ -62,6 +62,9 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // Above the 75 default: these are the committee's own photographs of the
+    // festival, and most people will see them on a high-density phone.
+    qualities: [85],
     // Nothing is loaded from a remote host, so no remote patterns are allowed.
     remotePatterns: [],
   },

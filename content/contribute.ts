@@ -8,7 +8,8 @@
  */
 export const contribute = {
   heading: "Contribute",
-  line: "Every year the festival is paid for by the people who come to it.",
+  line: "A celebration that belongs to all of us.",
+  sub: "Made possible by our community, together.",
   scan: "Scan with any UPI app",
 } as const;
 

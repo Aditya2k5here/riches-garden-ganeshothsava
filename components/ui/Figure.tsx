@@ -77,6 +77,7 @@ export function Figure({
             fill
             sizes={sizes}
             priority={priority}
+            quality={85}
             className="object-cover"
           />
         )}
