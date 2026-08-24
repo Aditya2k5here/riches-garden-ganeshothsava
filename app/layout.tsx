@@ -54,12 +54,12 @@ const kannadaSerif = localFont({
   preload: false,
 });
 
-const description = `${festival.organisation} presents the ${festival.edition} year of ${festival.name} — two days of faith, culture and community in Riches Garden, Ramamurthy Nagar, Bengaluru. Children's cultural programme registrations open.`;
+const description = `${festival.organisation} — ${festival.edition}, ${festival.dates}. Three days of faith, culture and community in Riches Garden, Ramamurthy Nagar, Bengaluru. Stage events registration open.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${festival.name} ${festival.year} · ${festival.edition} Year`,
+    default: `${festival.name} ${festival.year} · ${festival.edition}`,
     template: `%s · ${festival.name}`,
   },
   description,
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     "Riches Garden",
     "Ramamurthy Nagar",
     "Bengaluru",
-    "children's cultural programme",
+    "stage events",
   ],
   openGraph: {
     type: "website",

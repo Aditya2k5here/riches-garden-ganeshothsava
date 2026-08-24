@@ -11,6 +11,8 @@
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 
+import { checkMetadata } from "./qa-metadata.mjs";
+
 const BASE = process.env.SHOT_BASE ?? "http://localhost:3100";
 const exe = [
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
@@ -138,6 +140,9 @@ for (const needle of MUST_CONTAIN) {
 for (const needle of MUST_NOT_CONTAIN) {
   if (text.includes(needle)) fail(`stale text present: "${needle}"`);
 }
+
+console.log("\nMETADATA");
+await checkMetadata(page, { pass, fail, staleTerms: MUST_NOT_CONTAIN });
 
 console.log("\nPROGRAMME DAYS");
 for (const [tab, date, weekday] of DAY_DATES) {
