@@ -50,16 +50,37 @@ export function Stage() {
         </Reveal>
 
         {/* --- what can be performed --- */}
+
+        {/* On a phone the numbered grid stacked into six tall rows, and the
+            01–06 column earned none of the height it took. The same six
+            categories run as one wrapped line instead. From the small
+            breakpoint up the numbered grid is unchanged. */}
+        <Reveal delay={0.05} className="mt-8 block sm:hidden">
+          <ul className="flex flex-wrap gap-x-2.5 gap-y-2">
+            {stageEvents.categories.map((category) => (
+              <li
+                key={category}
+                className="flex items-baseline gap-2.5 font-display text-lg leading-tight text-cream-300"
+              >
+                <span aria-hidden="true" className="text-gold">
+                  &middot;
+                </span>
+                {category}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
         <RevealGroup
           as="ul"
           step={0.05}
-          className="mt-12 grid gap-x-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
+          className="mt-12 hidden gap-x-12 sm:grid sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
         >
           {stageEvents.categories.map((category, i) => (
             <RevealItem
               as="li"
               key={category}
-              className="flex items-baseline gap-5 border-b border-cream/15 py-6 first:border-t sm:[&:nth-child(2)]:border-t lg:[&:nth-child(3)]:border-t"
+              className="flex items-baseline gap-5 border-b border-cream/15 py-6 sm:[&:nth-child(-n+2)]:border-t lg:[&:nth-child(3)]:border-t"
             >
               <span className="nums font-sans text-[0.625rem] tracking-[0.2em] text-gold-300">
                 {String(i + 1).padStart(2, "0")}
@@ -90,7 +111,11 @@ export function Stage() {
             </dl>
           </Reveal>
 
-          <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
+          <Reveal
+            id="register"
+            delay={0.08}
+            className="scroll-mt-24 lg:col-span-5 lg:col-start-8"
+          >
             <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
               <div className="sm:pt-1">
                 <p className="font-display text-2xl leading-[1.1] text-gold">

@@ -65,6 +65,17 @@
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
+/* On a phone the section rhythm is measured in viewport heights, which on a
+   844px screen put 270px of blank between every pair of sections — generous
+   on a desktop, a lot of thumb-work on a phone. Fixed, smaller values below
+   the small breakpoint; every larger screen keeps the original clamps. */
+@media (max-width: 639px) {
+  :root {
+    --spacing-section: 3.25rem;
+    --spacing-section-lg: 4rem;
+  }
+}
+
 /* ==========================================================================
    BASE
    ========================================================================== */

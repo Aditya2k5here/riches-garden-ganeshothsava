@@ -90,17 +90,29 @@ export function Hero() {
 
       {/* --- type --- */}
       <motion.div
-        className="shell relative flex flex-1 flex-col justify-end pt-(--nav-h) pb-14 sm:pb-20"
+        className="shell relative flex flex-1 flex-col justify-between pt-(--nav-h) pb-16 sm:justify-end sm:pb-20"
         style={{ y: typeY, opacity: typeFade }}
       >
+        {/* On a phone the committee's name sits at the top, directly under
+            the mark — the way it does on the printed brochure cover. In the
+            bottom block it had nothing above it and read as floating. From
+            the small breakpoint up it stays where it was. */}
         <p
           lang="kn"
-          className="hero-soft font-kannada-display text-[0.9375rem] leading-none text-gold-300 sm:text-lg"
+          className="hero-soft mt-5 font-kannada-display text-[0.9375rem] leading-none text-gold-300 sm:hidden"
         >
           {kannada.committee}
         </p>
 
-        <h1 className="mt-3.5 sm:mt-6">
+        <div>
+        <p
+          lang="kn"
+          className="hero-soft hidden font-kannada-display leading-none text-gold-300 sm:block sm:text-lg"
+        >
+          {kannada.committee}
+        </p>
+
+        <h1 className="sm:mt-6">
           <span className="sr-only">
             {festival.name} {festival.year}
           </span>
@@ -134,7 +146,7 @@ export function Hero() {
               className="hero-soft flex flex-wrap items-baseline gap-x-4 gap-y-1"
               style={step(5)}
             >
-              <span className="figure-display text-2xl leading-none text-gold">
+              <span className="figure-display text-[2.125rem] leading-none text-gold sm:text-2xl">
                 {festival.edition}
               </span>
               <span
@@ -154,14 +166,26 @@ export function Hero() {
             </p>
           </div>
 
+          {/* Four jumps on a phone, two on a desktop. The desktop nav bar
+              already shows every section; on a phone it is behind a
+              hamburger, so the hero has to carry the shortcuts. */}
           <div
-            className="hero-soft flex flex-col gap-3 sm:flex-row sm:items-center"
+            className="hero-soft grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:items-center sm:gap-3"
             style={step(7)}
           >
             <a href="#programme" className="btn">
               Programme
             </a>
-            <a href="#stage" className="btn btn-ghost">
+            <a href="#register" className="btn btn-ghost sm:hidden">
+              Registration
+            </a>
+            <a href="#contribute" className="btn btn-ghost sm:hidden">
+              Contribute
+            </a>
+            <a href="#contact" className="btn btn-ghost sm:hidden">
+              Contact
+            </a>
+            <a href="#stage" className="btn btn-ghost hidden sm:inline-flex">
               Stage events
             </a>
           </div>
@@ -199,6 +223,27 @@ export function Hero() {
             </span>
           </span>
         </div>
+        </div>
+
+        {/* The desktop hero closes on a horizontal scroll cue; a phone has no
+            room for that row, so the same idea stands vertically in the
+            corner. Small on purpose — it is a hint, not a control. */}
+        <span
+          aria-hidden="true"
+          className="hero-fade absolute right-(--spacing-gutter) bottom-5 block h-9 w-px overflow-hidden bg-cream/15 sm:hidden"
+          style={step(9)}
+        >
+          <motion.span
+            className="absolute inset-x-0 top-0 block h-1/3 bg-gold"
+            animate={{ y: ["-120%", "320%"] }}
+            transition={{
+              duration: 2.4,
+              ease: [0.76, 0, 0.24, 1],
+              repeat: Infinity,
+              repeatDelay: 0.5,
+            }}
+          />
+        </span>
       </motion.div>
     </section>
   );

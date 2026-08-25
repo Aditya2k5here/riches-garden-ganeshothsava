@@ -41,9 +41,12 @@ export function Reveal({
   delay = 0,
   as = "div",
   variants = rise,
+  id,
 }: {
   children: ReactNode;
   className?: string;
+  /** Set when the block is a jump target. */
+  id?: string;
   /** Seconds. Staggering a parent is usually better than delaying children. */
   delay?: number;
   as?: TagName;
@@ -53,6 +56,7 @@ export function Reveal({
 
   return (
     <Tag
+      id={id}
       data-reveal=""
       className={className}
       initial="hidden"

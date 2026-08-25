@@ -59,7 +59,7 @@ export function Programme() {
         <Reveal delay={0.05}>
           <h2
             id="programme-heading"
-            className="mt-9 font-display text-3xl leading-[0.96] font-light text-maroon"
+            className="mt-6 font-display text-3xl leading-[0.96] font-light text-maroon sm:mt-9"
           >
             Three days
             <span className="block text-crimson italic">of celebration.</span>
@@ -72,7 +72,7 @@ export function Programme() {
             role="tablist"
             aria-label="Festival days"
             onKeyDown={onKeyDown}
-            className="mt-16 flex flex-wrap items-end gap-x-8 gap-y-4 border-b border-char/12 sm:gap-x-12 lg:mt-20"
+            className="mt-8 flex flex-wrap items-end gap-x-8 gap-y-4 border-b border-char/12 sm:mt-14 sm:gap-x-12 lg:mt-20"
           >
             {programme.map((d, i) => (
               <button
@@ -131,7 +131,7 @@ export function Programme() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
           >
-            <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-x-16">
+            <div className="mt-8 grid gap-8 sm:mt-12 sm:gap-10 lg:grid-cols-12 lg:gap-x-16">
               <div className="lg:col-span-4">
                 <p className="font-sans text-[0.6875rem] tracking-[0.24em] text-gold-600 uppercase">
                   {day.weekday}
