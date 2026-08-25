@@ -1,12 +1,7 @@
 import { QrCode } from "@/components/ui/QrCode";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
-import {
-  nav,
-  registrationFormUrl,
-  registrationIsPlaceholder,
-  stageEvents,
-} from "@/content";
+import { nav, registrationFormUrl, stageEvents } from "@/content";
 
 /**
  * STAGE EVENTS
@@ -134,11 +129,6 @@ export function Stage() {
                   <span aria-hidden="true">&rarr;</span>
                 </a>
 
-                {registrationIsPlaceholder && (
-                  <p className="mt-4 max-w-[26ch] text-[0.8125rem] leading-[1.5] text-cream/75">
-                    Placeholder link — set the form URL before publishing.
-                  </p>
-                )}
               </div>
 
               <div className="shrink-0">

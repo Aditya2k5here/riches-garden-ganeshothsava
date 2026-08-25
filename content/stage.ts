@@ -11,19 +11,22 @@ import type { ChildrenPerformance } from "./types";
  * they render as "opening soon" rather than a dead link.
  */
 /**
- * Stands in until the committee creates the form. It is a real, obviously
- * fake URL rather than an empty string so the section renders in its
- * finished state — button, QR and all — instead of showing a hole where the
- * most important call to action goes. `registrationIsPlaceholder` drives a
- * small notice that disappears the moment the real link is set.
+ * The committee's live Google Form.
+ *
+ * Kept in the repository rather than in an environment variable: it is a
+ * public link, printed on posters and shared in WhatsApp, so there is
+ * nothing to hide and one less piece of deployment configuration that can
+ * be forgotten. The environment variable still overrides it, which is what
+ * a dry run or a second form for another year would use.
+ *
+ * The QR code on the page is generated from this same constant at build
+ * time, so the button and the code can never point at different places.
  */
-const PLACEHOLDER_FORM_URL = "https://forms.gle/REPLACE-WITH-REAL-FORM";
+const COMMITTEE_FORM_URL = "https://forms.gle/wLsTHehvaoZLgyJ3A";
 
 export const registrationFormUrl =
-  process.env.NEXT_PUBLIC_REGISTRATION_FORM_URL || PLACEHOLDER_FORM_URL;
+  process.env.NEXT_PUBLIC_REGISTRATION_FORM_URL || COMMITTEE_FORM_URL;
 
-export const registrationIsPlaceholder =
-  registrationFormUrl === PLACEHOLDER_FORM_URL;
 
 export const stageEvents = {
   categories: [
