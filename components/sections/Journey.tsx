@@ -213,29 +213,66 @@ function DesktopTimeline() {
 /* -------------------------------------------------------------------------- */
 
 function MobileTimeline() {
-  return (
-    <div className="shell py-(--spacing-section) lg:hidden">
-      <Statement />
+  const years = journey.map((c) => c.year);
 
-      <ol className="mt-14 flex flex-col gap-11">
+  return (
+    <div className="py-(--spacing-section) lg:hidden">
+      <div className="shell">
+        <Statement />
+      </div>
+
+      {/*
+        A swipe strip, not a stack. Eight 4:3 photographs down a phone screen
+        came to nearly four screens of scrolling with nothing to do but keep
+        going — the years stopped feeling like a sequence and started feeling
+        like a queue. Sideways puts the whole run in one screen, makes each
+        year a deliberate flick, and matches what the desktop timeline does.
+
+        Scroll-snap does the work; there is no JavaScript here and no
+        carousel library. The strip bleeds into the gutters so the next year
+        is always half-visible, which is what invites the swipe.
+      */}
+      <ol
+        // A scroll container holding nothing focusable is unreachable by
+        // keyboard — the strip is only swipeable by touch otherwise. Making
+        // it a focus stop hands it the browser's own arrow-key scrolling.
+        tabIndex={0}
+        aria-label="Festival photographs by year — scroll sideways"
+        className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-p-(--spacing-gutter) px-(--spacing-gutter) pt-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         {journey.map((chapter) => (
-          <li key={chapter.year}>
-            <Reveal>
-              <div>
-                <Figure
-                  image={chapter.image}
-                  ratio="4 / 3"
-                  parallax={0}
-                  plateLabel={chapter.current ? "2026" : undefined}
-                  sizes="100vw"
-                  tone={chapter.current ? "maroon" : "cream"}
-                />
-                <YearLine year={chapter.year} current={chapter.current} />
-              </div>
-            </Reveal>
+          <li
+            key={chapter.year}
+            className="w-[74vw] max-w-[19rem] shrink-0 snap-start"
+          >
+            <Figure
+              image={chapter.image}
+              ratio="4 / 3"
+              parallax={0}
+              plateLabel={chapter.current ? "2026" : undefined}
+              sizes="74vw"
+              tone={chapter.current ? "maroon" : "cream"}
+            />
+            <YearLine year={chapter.year} current={chapter.current} />
           </li>
         ))}
       </ol>
+
+      <div className="shell mt-8">
+        <p
+          aria-hidden="true"
+          className="flex items-center gap-4 text-maroon/80"
+        >
+          <span className="figure-display text-[0.8125rem] leading-none">
+            {years[0]}
+          </span>
+          <span className="h-px flex-1 bg-maroon/15" />
+          <span className="figure-display text-[0.8125rem] leading-none">
+            {years[years.length - 1]}
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
+

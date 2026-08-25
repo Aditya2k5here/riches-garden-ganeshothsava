@@ -18,7 +18,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative bg-paper py-(--spacing-section-lg)"
+      className="relative bg-paper pt-(--spacing-section-lg) pb-(--spacing-section)"
       aria-labelledby="contact-heading"
     >
       <div className="shell">

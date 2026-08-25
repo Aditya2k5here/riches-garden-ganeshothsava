@@ -12,6 +12,11 @@ import { committee, nav } from "@/content";
  *
  * Two rows show and the rest expand: this sits last on the page because the
  * festival is the subject and the people running it are the credits.
+ *
+ * Much less top padding than the other sections, and Contact above it has a
+ * shortened foot. Both sit on the same cream, so their full section gaps ran
+ * together into a band of dead paper with nothing — not even a colour change
+ * — to justify it. Enough is left for the heading to breathe under the bar.
  */
 export function Committee() {
   const label = nav[5]!;
@@ -19,7 +24,7 @@ export function Committee() {
   return (
     <section
       id="committee"
-      className="relative bg-paper py-(--spacing-section-lg)"
+      className="relative bg-paper pt-10 pb-(--spacing-section-lg) lg:pt-14"
       aria-labelledby="committee-heading"
     >
       <div className="shell">

@@ -95,12 +95,12 @@ export function Hero() {
       >
         <p
           lang="kn"
-          className="hero-soft font-kannada text-sm text-gold-300 sm:text-base"
+          className="hero-soft font-kannada-display text-[0.9375rem] leading-none text-gold-300 sm:text-lg"
         >
           {kannada.committee}
         </p>
 
-        <h1 className="mt-5 sm:mt-7">
+        <h1 className="mt-3.5 sm:mt-6">
           <span className="sr-only">
             {festival.name} {festival.year}
           </span>

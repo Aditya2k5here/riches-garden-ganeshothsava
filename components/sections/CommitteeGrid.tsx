@@ -18,8 +18,15 @@ import { EASE_OUT_EXPO } from "@/lib/motion";
  * measuring means "two rows" stays true at every one of them, and after the
  * fonts load.
  */
-/** How much of the third row shows under the fade. */
-const PEEK = 56;
+/**
+ * How far into the third row the collapsed grid reaches. The whole of this
+ * band is what dissolves, so it wants to be deep enough to read as
+ * "photographs continuing" rather than as a trimmed edge.
+ */
+const PEEK = 118;
+
+/** Opaque until the last row, then dissolved away over the peeking band. */
+const FADE = `linear-gradient(to bottom, #000 0, #000 calc(100% - ${PEEK}px), transparent 100%)`;
 
 export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
   const grid = useRef<HTMLUListElement>(null);
@@ -76,12 +83,19 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
     <div>
       <motion.div
         className="relative"
-        animate={{
-          height: hidden ? collapsedHeight : "auto",
-        }}
+        animate={{ height: hidden ? collapsedHeight : "auto" }}
         initial={false}
-        transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
-        style={{ overflow: hidden ? "hidden" : "visible" }}
+        transition={{ duration: 0.75, ease: EASE_OUT_EXPO }}
+        style={{
+          overflow: hidden ? "hidden" : "visible",
+          // A mask rather than a gradient panel laid over the top. An overlay
+          // has to be painted in the section's own background colour to
+          // work, and it still ends in a hard line where the clip is; a mask
+          // dissolves the photographs themselves to nothing, so the grid
+          // reads as continuing past the fold instead of being cut off.
+          maskImage: hidden ? FADE : undefined,
+          WebkitMaskImage: hidden ? FADE : undefined,
+        }}
       >
         <ul
           ref={grid}
@@ -90,7 +104,8 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
           {members.map((member, i) => (
             <li
               key={member.name}
-              // Anything below the fold is out of the tab order while closed.
+              // Anything past the first two rows is out of the tab order
+              // while closed — it is visible, but only as a hint.
               inert={hidden && i >= 4 ? true : undefined}
             >
               <Figure
@@ -110,7 +125,6 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
             </li>
           ))}
         </ul>
-
       </motion.div>
 
       {collapsible && (
