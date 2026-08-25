@@ -93,7 +93,13 @@ export function Stage() {
         </RevealGroup>
 
         {/* --- rules and registration --- */}
-        <div className="mt-16 grid gap-14 lg:mt-20 lg:grid-cols-12 lg:gap-x-16">
+        {/* The anchor sits on the whole block, not just the button: landing
+            here should show the durations, the button and the code together,
+            which is everything a parent needs before they tap. */}
+        <div
+          id="register"
+          className="mt-16 grid scroll-mt-24 gap-14 lg:mt-20 lg:grid-cols-12 lg:gap-x-16"
+        >
           {/* Term above value, not term-left value-right: with no leader
               dots between them a split pair just reads as two lost columns. */}
           <Reveal className="lg:col-span-6">
@@ -111,11 +117,7 @@ export function Stage() {
             </dl>
           </Reveal>
 
-          <Reveal
-            id="register"
-            delay={0.08}
-            className="scroll-mt-24 lg:col-span-5 lg:col-start-8"
-          >
+          <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
             <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
               <div className="sm:pt-1">
                 <p className="font-display text-2xl leading-[1.1] text-gold">
@@ -126,7 +128,7 @@ export function Stage() {
                   href={registrationFormUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn mt-6"
+                  className="btn btn-shine mt-6"
                 >
                   {stageEvents.register}
                   <span aria-hidden="true">&rarr;</span>

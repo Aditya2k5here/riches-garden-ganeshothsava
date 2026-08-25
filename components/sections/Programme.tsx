@@ -48,7 +48,7 @@ export function Programme() {
   return (
     <section
       id="programme"
-      className="relative bg-paper py-(--spacing-section-lg)"
+      className="relative bg-paper pt-8 pb-(--spacing-section-lg) sm:pt-(--spacing-section-lg)"
       aria-labelledby="programme-heading"
     >
       <div className="shell">
@@ -160,7 +160,7 @@ export function Programme() {
                         is set at the same size as the event and in the
                         display face — not shrunk into a small-caps margin
                         note the way schedules usually treat it. */}
-                    <div className="flex flex-col gap-1.5 py-6 sm:flex-row sm:items-baseline sm:gap-9 sm:py-7">
+                    <div className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:gap-9 sm:py-7">
                       <p className="figure-display w-full shrink-0 text-xl leading-none text-crimson sm:w-32">
                         {event.time}
                       </p>

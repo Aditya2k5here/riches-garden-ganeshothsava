@@ -90,7 +90,7 @@ export function Hero() {
 
       {/* --- type --- */}
       <motion.div
-        className="shell relative flex flex-1 flex-col justify-between pt-(--nav-h) pb-16 sm:justify-end sm:pb-20"
+        className="shell relative flex flex-1 flex-col justify-between pt-(--nav-h) pb-7 sm:justify-end sm:pb-20"
         style={{ y: typeY, opacity: typeFade }}
       >
         {/* On a phone the committee's name sits at the top, directly under
@@ -112,7 +112,7 @@ export function Hero() {
           {kannada.committee}
         </p>
 
-        <h1 className="sm:mt-6">
+        <h1 className="mt-7 sm:mt-6">
           <span className="sr-only">
             {festival.name} {festival.year}
           </span>
@@ -170,24 +170,47 @@ export function Hero() {
               already shows every section; on a phone it is behind a
               hamburger, so the hero has to carry the shortcuts. */}
           <div
-            className="hero-soft grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:items-center sm:gap-3"
+            className="hero-soft flex items-stretch gap-3 sm:block"
             style={step(7)}
           >
-            <a href="#programme" className="btn">
-              Programme
-            </a>
-            <a href="#register" className="btn btn-ghost sm:hidden">
-              Registration
-            </a>
-            <a href="#contribute" className="btn btn-ghost sm:hidden">
-              Contribute
-            </a>
-            <a href="#contact" className="btn btn-ghost sm:hidden">
-              Contact
-            </a>
-            <a href="#stage" className="btn btn-ghost hidden sm:inline-flex">
-              Stage events
-            </a>
+            <div className="grid flex-1 grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:items-center sm:gap-3">
+              <a href="#programme" className="btn">
+                Programme
+              </a>
+              <a href="#register" className="btn btn-ghost sm:hidden">
+                Registration
+              </a>
+              <a href="#contribute" className="btn btn-ghost sm:hidden">
+                Contribute
+              </a>
+              <a href="#contact" className="btn btn-ghost sm:hidden">
+                Contact
+              </a>
+              <a href="#stage" className="btn btn-ghost hidden sm:inline-flex">
+                Stage events
+              </a>
+            </div>
+
+            {/* Beside the buttons rather than on a line of its own. As its
+                own row it cost a full strip of the screen and left the space
+                to its left doing nothing. */}
+            <span
+              aria-hidden="true"
+              className="flex w-4 shrink-0 items-end justify-center pb-1 sm:hidden"
+            >
+              <span className="relative block h-10 w-px overflow-hidden bg-cream/20">
+                <motion.span
+                  className="absolute inset-x-0 top-0 block h-1/3 bg-gold"
+                  animate={{ y: ["-120%", "320%"] }}
+                  transition={{
+                    duration: 2.4,
+                    ease: [0.76, 0, 0.24, 1],
+                    repeat: Infinity,
+                    repeatDelay: 0.4,
+                  }}
+                />
+              </span>
+            </span>
           </div>
         </div>
 
@@ -225,25 +248,6 @@ export function Hero() {
         </div>
         </div>
 
-        {/* The desktop hero closes on a horizontal scroll cue; a phone has no
-            room for that row, so the same idea stands vertically in the
-            corner. Small on purpose — it is a hint, not a control. */}
-        <span
-          aria-hidden="true"
-          className="hero-fade absolute right-(--spacing-gutter) bottom-5 block h-9 w-px overflow-hidden bg-cream/15 sm:hidden"
-          style={step(9)}
-        >
-          <motion.span
-            className="absolute inset-x-0 top-0 block h-1/3 bg-gold"
-            animate={{ y: ["-120%", "320%"] }}
-            transition={{
-              duration: 2.4,
-              ease: [0.76, 0, 0.24, 1],
-              repeat: Infinity,
-              repeatDelay: 0.5,
-            }}
-          />
-        </span>
       </motion.div>
     </section>
   );

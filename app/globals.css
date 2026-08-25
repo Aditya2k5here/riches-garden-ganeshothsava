@@ -603,3 +603,52 @@ body[data-loading="true"] {
   font-family: var(--font-kannada-display);
   line-height: 1.3;
 }
+
+/* ==========================================================================
+   REGISTER BUTTON
+   A single sheen crossing the button every few seconds. The registration CTA
+   is the one thing on the page with a deadline behind it, and on a maroon
+   field a gold button can sit quietly enough to be missed. One pass, wide
+   and soft — a highlight catching the surface, not a shimmer effect.
+   ========================================================================== */
+
+@layer components {
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    animation: rg-shine 4.5s var(--ease-in-out-quart) 2s infinite;
+  }
+
+  @keyframes rg-shine {
+    /* Crosses once, then waits — the pause is most of the duration. */
+    0% {
+      transform: translateX(-100%);
+    }
+    28%,
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after {
+    animation: none;
+    opacity: 0;
+  }
+}
