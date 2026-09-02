@@ -14,23 +14,29 @@ import { EASE_OUT_EXPO } from "@/lib/motion";
  *
  * The collapsed height is measured from where the third row actually starts
  * rather than being a fixed pixel value or an nth-child rule per breakpoint —
- * the grid is 2 columns on a phone, 3 on a tablet and 5 on a desktop, and
- * measuring means "two rows" stays true at every one of them, and after the
- * fonts load.
+ * the grid is 3 columns on a phone and 6 on a desktop, and measuring means
+ * "two rows" stays true at both, and after the fonts load.
  */
+
 /**
- * How far into the third row the collapsed grid reaches. The whole of this
- * band is what dissolves, so it wants to be deep enough to read as
- * "photographs continuing" rather than as a trimmed edge.
+ * How far into the third row the collapsed grid reaches, as a share of the row
+ * pitch. The whole of this band is what dissolves, so it wants to be deep
+ * enough to read as "photographs continuing" rather than as a trimmed edge —
+ * but a fixed pixel depth cannot do that at every breakpoint, because a row is
+ * roughly twice as tall on a desktop as on a phone. Measured, it stays the
+ * same gesture on both.
  */
-const PEEK = 118;
+const PEEK_RATIO = 0.34;
 
 /** Opaque until the last row, then dissolved away over the peeking band. */
-const FADE = `linear-gradient(to bottom, #000 0, #000 calc(100% - ${PEEK}px), transparent 100%)`;
+const fade = (peek: number) =>
+  `linear-gradient(to bottom, #000 0, #000 calc(100% - ${peek}px), transparent 100%)`;
 
 export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
   const grid = useRef<HTMLUListElement>(null);
   const [collapsedHeight, setCollapsedHeight] = useState<number | null>(null);
+  const [peek, setPeek] = useState(0);
+  const [columns, setColumns] = useState(3);
   const [open, setOpen] = useState(false);
 
   const measure = useCallback(() => {
@@ -42,11 +48,14 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
 
     // Walk the items until the top offset changes twice: that is row three.
     const rowTops: number[] = [];
+    let first = 0;
     for (const item of items) {
       const top = item.offsetTop;
       if (!rowTops.includes(top)) rowTops.push(top);
+      if (rowTops.length === 1) first += 1;
       if (rowTops.length === 3) break;
     }
+    setColumns(first);
 
     // Fewer than three rows — everything already fits, no toggle needed.
     if (rowTops.length < 3) {
@@ -58,7 +67,9 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
     // the second. That sliver of the next row, fading out, is what tells you
     // there is more — a grid that ends on a tidy boundary just looks like the
     // whole list, and the button alone is easy to miss.
-    setCollapsedHeight(rowTops[2]! + PEEK);
+    const peek = Math.round((rowTops[2]! - rowTops[1]!) * PEEK_RATIO);
+    setPeek(peek);
+    setCollapsedHeight(rowTops[2]! + peek);
   }, []);
 
   useEffect(() => {
@@ -78,6 +89,10 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
 
   const collapsible = collapsedHeight !== null;
   const hidden = collapsible && !open;
+  // Everything in the first two rows stays tabbable while closed; the column
+  // count is read off the grid rather than assumed, so this follows the
+  // breakpoint instead of hard-coding one.
+  const visible = columns * 2;
 
   return (
     <div>
@@ -93,28 +108,33 @@ export function CommitteeGrid({ members }: { members: CommitteeMember[] }) {
           // work, and it still ends in a hard line where the clip is; a mask
           // dissolves the photographs themselves to nothing, so the grid
           // reads as continuing past the fold instead of being cut off.
-          maskImage: hidden ? FADE : undefined,
-          WebkitMaskImage: hidden ? FADE : undefined,
+          maskImage: hidden ? fade(peek) : undefined,
+          WebkitMaskImage: hidden ? fade(peek) : undefined,
         }}
       >
         <ul
           ref={grid}
-          className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-7 lg:gap-y-11"
+          // Three across on a phone rather than two, six on a desktop rather
+          // than five. The originals are 68-160px brochure scans; at the old
+          // widths they were being blown up nearly twice over, which is what
+          // made them look both oversized and soft. These widths sit much
+          // closer to the photographs' own scale.
+          className="grid grid-cols-3 gap-x-3.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-6 lg:gap-x-6 lg:gap-y-10"
         >
           {members.map((member, i) => (
             <li
               key={member.name}
               // Anything past the first two rows is out of the tab order
               // while closed — it is visible, but only as a hint.
-              inert={hidden && i >= 4 ? true : undefined}
+              inert={hidden && i >= visible ? true : undefined}
             >
               <Figure
                 image={member.image}
-                ratio="1 / 1"
+                ratio="4 / 5"
                 parallax={0}
-                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 17vw"
+                sizes="(max-width: 640px) 30vw, (max-width: 1024px) 30vw, 15vw"
               />
-              <p className="mt-3.5 font-display text-lg leading-tight text-maroon">
+              <p className="mt-3 font-display text-base leading-tight text-maroon sm:mt-3.5 sm:text-lg">
                 {member.name}
               </p>
               {member.role && (

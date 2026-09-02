@@ -7,11 +7,11 @@ import type { CommitteeMember } from "./types";
  * Twenty-one members, in the twenty-first year.
  *
  * Portraits come from the same brochure, lifted out of the PDF by
- * `scripts/extract-committee-photos.py` and squared by
+ * `scripts/extract-committee-photos.py` and sized by
  * `scripts/prepare-committee-photos.mjs`. The file name is derived from the
  * member's name, so adding a portrait is a matter of dropping the right file
  * in — there is no second list to keep in step. A member with no file still
- * renders a square ornamental plate, so the grid never breaks.
+ * renders an ornamental plate, so the grid never breaks.
  *
  * Order: the four members who hold the main portfolios first, then the rest
  * as printed in the brochure.
@@ -26,9 +26,17 @@ function portrait(name: string) {
 
   return {
     src: `/images/committee/${slug}.jpg`,
-    alt: name,
-    width: 512,
-    height: 512,
+    // Deliberately empty. The member's name is printed directly under the
+    // portrait as real text, so giving the image the name too makes a screen
+    // reader announce it twice — "Mune Gowda, image, Mune Gowda". The picture
+    // carries nothing the caption does not, which is the definition of
+    // decorative.
+    alt: "",
+    // 4:5, which is what the brochure photographs already are. Cropping them
+    // square meant cutting a fifth of the height out of a head-and-shoulders
+    // portrait, which took the tops of the heads with it.
+    width: 480,
+    height: 600,
   };
 }
 

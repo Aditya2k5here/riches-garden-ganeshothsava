@@ -6,13 +6,24 @@
  *
  * The originals are passport photographs printed small: the largest is
  * 160px on its long edge, the smallest 68px. Nothing here can invent detail
- * that was never in the PDF, so the job is to lose as little as possible —
- * crop square on the face, upscale once with a good kernel, and sharpen just
- * enough to undo the softening that upscaling causes.
+ * that was never in the PDF, so the job is to lose as little as possible.
  *
- * 512px square is deliberately modest. The grid shows them at about 170 CSS
- * px, so 512 covers a 3x phone; going larger would only be stretching an
- * already-small original further.
+ * They are kept at 4:5, which is what they very nearly are already — most
+ * sit between 0.80 and 0.83 — so almost nothing is thrown away. Squaring
+ * them was the mistake: it meant cutting a fifth of the height out of a
+ * head-and-shoulders portrait, and a saliency crop takes that off the top,
+ * which clipped the top of every head and left the faces filling the frame
+ * with no air around them.
+ *
+ * Crop position is fixed rather than automatic, because automatic is what
+ * made the faces sit at different heights:
+ *   taller than 4:5  -> crop from the bottom, keeping the head and its
+ *                       headroom and trimming chest
+ *   wider than 4:5   -> crop the sides evenly; these are centred already
+ *
+ * 480x600 is deliberately modest. The grid shows them at about 170 CSS px
+ * wide, so this covers a 3x phone; larger would only stretch a small
+ * original further.
  */
 import { mkdir, readdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -21,7 +32,9 @@ import sharp from "sharp";
 
 const SRC = ".cache/committee-raw";
 const OUT = "public/images/committee";
-const SIZE = 512;
+const WIDTH = 480;
+const HEIGHT = 600;
+const TARGET = WIDTH / HEIGHT;
 
 if (!existsSync(SRC)) {
   console.error(`No extracts in ${SRC} — run the Python extractor first.`);
@@ -40,13 +53,16 @@ for (const file of files) {
   const meta = await sharp(input).metadata();
   smallest = Math.min(smallest, meta.width, meta.height);
 
+  const aspect = meta.width / meta.height;
+  // Taller than the frame means the trim comes out of the height, and it
+  // should come off the bottom so the head survives.
+  const position = aspect < TARGET ? "top" : "centre";
+
   const out = path.join(OUT, `${name}.jpg`);
   const info = await sharp(input)
-    .resize(SIZE, SIZE, {
+    .resize(WIDTH, HEIGHT, {
       fit: "cover",
-      // Faces, not centres: several of these are cropped off-centre in the
-      // brochure and a plain centre crop clips foreheads and chins.
-      position: sharp.strategy.attention,
+      position,
       kernel: "lanczos3",
     })
     // Modest unsharp mask. Upscaling a 100px original softens it; this puts
@@ -56,7 +72,8 @@ for (const file of files) {
     .toFile(out);
 
   console.log(
-    `${name.padEnd(20)} ${meta.width}x${meta.height} -> ${info.width}x${info.height}  ${Math.round(info.size / 1024)} kB`,
+    `${name.padEnd(20)} ${meta.width}x${meta.height}  aspect ${aspect.toFixed(2)}  ` +
+      `crop ${position.padEnd(6)} -> ${info.width}x${info.height}  ${Math.round(info.size / 1024)} kB`,
   );
 }
 
