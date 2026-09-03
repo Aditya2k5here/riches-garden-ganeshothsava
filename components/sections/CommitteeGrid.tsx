@@ -8,7 +8,7 @@ import type { CommitteeMember } from "@/content";
 import { EASE_OUT_EXPO } from "@/lib/motion";
 
 /**
- * Twenty-one people is a lot of grid to scroll past on a phone, and the
+ * Twenty-two people is a lot of grid to scroll past on a phone, and the
  * committee is the credits rather than the headline. Two rows show; the rest
  * open on request.
  *

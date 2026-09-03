@@ -105,7 +105,7 @@ attention crop centred on it and pushed the Ganesha off to the side.
 Committee portraits go in `public/images/committee/` as squares, added to the
 member's entry in `content/committee.ts`. Until one exists, the cell renders
 an ornamental plate at the same 1:1 — a composed panel rather than a grey box,
-so the grid looks finished whether one portrait exists or all twenty-one do.
+so the grid looks finished whether one portrait exists or all twenty-two do.
 
 ### Publishing the stage running order
 

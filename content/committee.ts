@@ -3,18 +3,25 @@ import type { CommitteeMember } from "./types";
 /**
  * COMMITTEE
  *
- * Names and portfolios come from the committee's own printed brochure.
- * Twenty-one members, in the twenty-first year.
+ * Twenty-two members, taken from the 2026 invitation
+ * (`References/Ganesha 2026 Final.pdf`, page 3).
  *
- * Portraits come from the same brochure, lifted out of the PDF by
- * `scripts/extract-committee-photos.py` and sized by
- * `scripts/prepare-committee-photos.mjs`. The file name is derived from the
- * member's name, so adding a portrait is a matter of dropping the right file
- * in — there is no second list to keep in step. A member with no file still
- * renders an ornamental plate, so the grid never breaks.
+ * The order is the invitation's own — left to right, top to bottom, exactly
+ * as the committee laid its grid out. It is not alphabetical and it is not
+ * ranked by portfolio; it is what they printed, so it is what is shown.
  *
- * Order: the four members who hold the main portfolios first, then the rest
- * as printed in the brochure.
+ * Portraits come from that same page, lifted out by
+ * `scripts/extract-committee-photos.py`, which pairs each face to its caption
+ * by position on the page rather than by any list written here. The file name
+ * is derived from the member's name, so adding a portrait is a matter of
+ * dropping the right file in — there is no second list to keep in step. A
+ * member with no file still renders an ornamental plate, so the grid never
+ * breaks.
+ *
+ * Roles are the invitation's "Key Volunteers" list, and only that list. The
+ * contributions column names people too, but those are sponsorships — who
+ * paid for the lighting is not a committee portfolio, and several of the
+ * names there (Devaraj, Kumareshan, Shiva) are not committee members at all.
  */
 
 /** `Srinivas E.P` -> `/images/committee/srinivas-e-p.jpg` */
@@ -32,36 +39,34 @@ function portrait(name: string) {
     // carries nothing the caption does not, which is the definition of
     // decorative.
     alt: "",
-    // 4:5, which is what the brochure photographs already are. Cropping them
-    // square meant cutting a fifth of the height out of a head-and-shoulders
-    // portrait, which took the tops of the heads with it.
-    width: 480,
-    height: 600,
+    width: 512,
+    height: 640,
   };
 }
 
 const members: Omit<CommitteeMember, "image">[] = [
-  { name: "Malathesh", role: "Convenor" },
-  { name: "Srinivas V", role: "Cultural Activities" },
-  { name: "Prem Kumar", role: "Accounts · Flower Decoration" },
-  { name: "Murthy", role: "Food · Flower Decoration" },
   { name: "Mune Gowda" },
-  { name: "Suresh Kumar", role: "Sports & Games" },
+  { name: "Malathesh", role: "Convenor" },
+  { name: "Murthy", role: "Food" },
+  { name: "Suresh Kumar", role: "Fun Games" },
+  { name: "Prem Kumar", role: "Accounts" },
   { name: "Subbu Krishna" },
+  { name: "Srinivas V", role: "Cultural Activities · Accounts" },
   { name: "Saravana Shekar" },
-  { name: "Andrews", role: "Sports & Games" },
-  { name: "Srinivas E.P" },
-  { name: "Rajesh", role: "Food · Sports" },
+  { name: "Andrews", role: "Fun Games" },
+  { name: "Dr. Phani Kumar" },
+  { name: "Rajesh", role: "Food · Fun Games" },
   { name: "Balagangadhar" },
   { name: "Murthy T" },
-  { name: "Uma Maheshwar" },
+  { name: "Srinivas E.P" },
+  { name: "Thyagaraju Naidu" },
   { name: "Krishna Moorthy" },
   { name: "Mounesh" },
   { name: "Shivappa Meti" },
   { name: "Venkatesh B" },
   { name: "Srinivas Rao V" },
   { name: "Vinay" },
-  { name: "Reji Subramanian" },
+  { name: "Uma Maheshwar" },
 ];
 
 export const committee: CommitteeMember[] = members.map((member) => ({

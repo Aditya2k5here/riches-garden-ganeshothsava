@@ -6,21 +6,25 @@ Everything below is something a person has to do. None of it is code.
 
 ## 1. Before you deploy
 
-Three things are still placeholders. The site is honest about all three — it
-says so on the page — but they should be real before you share the link.
+The Google Form and the committee portraits are both real now. Two things are
+still outstanding, and the site is honest about both — it says so on the page.
 
 | What | Where it comes from | What happens until then |
 |---|---|---|
-| Google Form URL | You create it — see [registration-form.md](registration-form.md) | Register button points at a dummy link and a "placeholder link" note shows under it |
-| Committee portraits | Square photos, one per member | Each cell renders an ornamental plate instead |
 | 2022 journey photo | If one exists | 2022 is simply absent from the timeline |
+| Sponsor logos | The sponsors | The Sponsors section is not mounted at all |
 
-Two facts worth double-checking before print and web go out together:
+Settled by the 2026 invitation, for the record:
 
-- **Evening performance time.** Your 2025 card says *6:30 pm* in the English
-  column and *6:00* in the Kannada column. The site uses 6:30 pm.
-- **"Stage Performance by Kids"** on the printed card is listed here as
-  **Stage Events**, to match what the rest of the site calls it.
+- **Evening performance time is 6:00 pm.** The 2025 card disagreed with
+  itself — 6:30 in the English column, 6:00 in the Kannada — and the site
+  carried 6:30 until the final invitation printed 6:00 in both.
+- **Sunday's Maha Annadanam is not in the 2026 programme.** The 10:00 am slot
+  is the Lalitha School of Music recital instead.
+
+One liberty the site still takes: **"Stage Performance by Kids"** on the
+printed invitation is listed here as **Stage Events**, to match what the rest
+of the site calls it.
 
 ---
 

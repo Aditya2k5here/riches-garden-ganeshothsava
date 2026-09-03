@@ -7,7 +7,7 @@ import { committee, nav } from "@/content";
  * COMMITTEE
  *
  * Photograph, name, role — the same size and the same weight for all
- * twenty-one, whether or not they hold a portfolio. Nobody's name is set
+ * twenty-two, whether or not they hold a portfolio. Nobody's name is set
  * larger than anybody else's.
  *
  * Two rows show and the rest expand: this sits last on the page because the
