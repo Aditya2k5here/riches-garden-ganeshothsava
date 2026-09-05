@@ -174,16 +174,24 @@ export function Hero() {
             style={step(7)}
           >
             <div className="grid flex-1 grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:items-center sm:gap-3">
-              <a href="#programme" className="btn">
-                Programme
+              {/* Registration leads on a phone: full width, solid, and named
+                  in full. It is the one thing on this page that asks the
+                  visitor to do something, and a lot of the people it is
+                  asking are not going to hunt for it. The other three stay
+                  ghosted so the hierarchy is carried by weight, not size. */}
+              <a
+                href="#register"
+                className="btn btn-shine col-span-2 order-first text-[0.9375rem] sm:hidden"
+              >
+                Stage Show Registration
               </a>
-              <a href="#register" className="btn btn-ghost sm:hidden">
-                Registration
+              <a href="#programme" className="btn btn-quiet-phone">
+                Programme
               </a>
               <a href="#contribute" className="btn btn-ghost sm:hidden">
                 Contribute
               </a>
-              <a href="#contact" className="btn btn-ghost sm:hidden">
+              <a href="#contact" className="btn btn-ghost col-span-2 sm:hidden">
                 Contact
               </a>
               <a href="#stage" className="btn btn-ghost hidden sm:inline-flex">

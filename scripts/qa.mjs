@@ -24,8 +24,7 @@ const MUST_CONTAIN = [
   "21st Year",
   "18 · 19 · 20 September 2026",
   "Stage Events",
-  "2–5 minutes",
-  "7 minutes",
+  "5 minutes",
   "Riches Garden Main Road",
   "Ramamurthy Nagar",
 ];

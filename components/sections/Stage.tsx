@@ -88,13 +88,7 @@ export function Stage() {
         </RevealGroup>
 
         {/* --- rules and registration --- */}
-        {/* The anchor sits on the whole block, not just the button: landing
-            here should show the durations, the button and the code together,
-            which is everything a parent needs before they tap. */}
-        <div
-          id="register"
-          className="mt-16 grid scroll-mt-24 gap-14 lg:mt-20 lg:grid-cols-12 lg:gap-x-16"
-        >
+        <div className="mt-16 grid gap-14 lg:mt-20 lg:grid-cols-12 lg:gap-x-16">
           {/* Term above value, not term-left value-right: with no leader
               dots between them a split pair just reads as two lost columns. */}
           <Reveal className="lg:col-span-6">
@@ -112,42 +106,51 @@ export function Stage() {
             </dl>
           </Reveal>
 
-          <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
-            <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
-              <div className="sm:pt-1">
-                <p className="font-display text-2xl leading-[1.1] text-gold">
-                  {stageEvents.registrationOpen}
-                </p>
+          {/* The anchor sits on the button and the code, not on the block
+              above them. Landing on the whole block put the durations at the
+              top of the screen and pushed the button itself off the bottom,
+              which is the opposite of what following a link called
+              "registration" should do. */}
+          <div
+            id="register"
+            className="scroll-mt-3 lg:col-span-5 lg:col-start-8"
+          >
+            <Reveal delay={0.08}>
+              <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
+                <div className="sm:pt-1">
+                  <p className="font-display text-2xl leading-[1.1] text-gold">
+                    {stageEvents.registrationOpen}
+                  </p>
 
-                <a
-                  href={registrationFormUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-shine mt-6"
-                >
-                  {stageEvents.register}
-                  <span aria-hidden="true">&rarr;</span>
-                </a>
+                  <a
+                    href={registrationFormUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-shine mt-6"
+                  >
+                    {stageEvents.register}
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
 
-              </div>
-
-              <div className="shrink-0">
-                {/* Sized for scanning, not for layout: a real Google Forms
+                <div className="shrink-0">
+                  {/* Sized for scanning, not for layout: a real Google Forms
                     URL is far longer than the placeholder and produces a
                     denser code, so the modules need the room. */}
-                <div className="w-48 bg-cream-300 p-3.5">
-                  <QrCode
-                    value={registrationFormUrl}
-                    label="QR code linking to the stage events registration form"
-                    className="text-maroon-900"
-                  />
+                  <div className="w-48 bg-cream-300 p-3.5">
+                    <QrCode
+                      value={registrationFormUrl}
+                      label="QR code linking to the stage events registration form"
+                      className="text-maroon-900"
+                    />
+                  </div>
+                  <p className="mt-3 font-sans text-[0.625rem] tracking-[0.16em] text-cream/75 uppercase">
+                    Scan to register
+                  </p>
                 </div>
-                <p className="mt-3 font-sans text-[0.625rem] tracking-[0.16em] text-cream/75 uppercase">
-                  Scan to register
-                </p>
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>

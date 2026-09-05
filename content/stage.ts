@@ -40,12 +40,8 @@ export const stageEvents = {
 
   rules: [
     {
-      term: "Preferred duration",
-      detail: "2–5 minutes",
-    },
-    {
       term: "Maximum duration",
-      detail: "7 minutes",
+      detail: "5 minutes",
     },
     {
       term: "Entry",
