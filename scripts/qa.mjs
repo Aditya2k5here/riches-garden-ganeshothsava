@@ -173,11 +173,31 @@ for (const route of ["/programme/children", "/not-a-real-page"]) {
 }
 
 console.log("\nRUNTIME");
-const realFailures = failedRequests.filter((r) => !r.includes("not-a-real-page"));
+/**
+ * `/_vercel/insights/*` is served by the platform's edge, not by the app, so
+ * it only exists on a deployment. Running `next start` locally the analytics
+ * script 404s, and the browser then refuses to execute the HTML error page it
+ * got back — two failures that say nothing about the site.
+ *
+ * They are ignored only when auditing localhost. Point SHOT_BASE at the
+ * deployed site and they count again, which is the run where a broken
+ * analytics script would actually mean something.
+ */
+const local = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
+const platformOnly = (text) => local && text.includes("/_vercel/");
+
+const realFailures = failedRequests
+  .filter((r) => !r.includes("not-a-real-page"))
+  .filter((r) => !platformOnly(r));
 if (realFailures.length) realFailures.forEach((r) => fail(`request ${r}`));
 else pass("no failed requests");
-if (homepageConsoleErrors.length) {
-  [...new Set(homepageConsoleErrors)].forEach((e) =>
+// The MIME-type refusal names the URL; the bare "Failed to load resource"
+// that precedes it does not, so it is matched by shape instead.
+const realConsoleErrors = homepageConsoleErrors.filter(
+  (e) => !platformOnly(e) && !(local && e.includes("Failed to load resource")),
+);
+if (realConsoleErrors.length) {
+  [...new Set(realConsoleErrors)].forEach((e) =>
     fail(`console: ${e.slice(0, 140)}`),
   );
 } else {

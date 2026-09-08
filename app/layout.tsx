@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Instrument_Sans } from "next/font/google";
 import localFont from "next/font/local";
@@ -108,6 +109,16 @@ export default function RootLayout({
           <style>{`.loader{display:none!important}body{overflow:auto!important}[data-reveal],[data-reveal] *{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
         <Providers>{children}</Providers>
+        {/*
+          Page views only — no cookies, no cross-site identifier, nothing that
+          needs a consent banner. It is served from /_vercel/insights on this
+          same origin, so the content security policy needs no exception: both
+          `script-src 'self'` and `connect-src 'self'` already cover it.
+
+          It renders nothing, and it is last in the body so it can never sit
+          in front of the loader or delay first paint.
+        */}
+        <Analytics />
       </body>
     </html>
   );
